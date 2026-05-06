@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Indian Stock Portfolio Dashboard--Saju</title>
+<style>
+  :root {
+    --bg: #0f1420;
+    --panel: #161c2c;
+    --panel-2: #1d2438;
+    --border: #2a3350;
+    --text: #e6e9f2;
+    --muted: #8a93a8;
+    --accent: #4f8cff;
+    --accent-2: #7aa9ff;
+    --green: #21c07a;
+    --red: #ff5d6c;
+    --amber: #f5b73b;
+    --shadow: 0 6px 24px rgba(0,0,0,0.35);
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: linear-gradient(180deg, #0c1120 0%, #131a2c 100%);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    min-height: 100vh;
+  }
+  .wrap { max-width: 1320px; margin: 0 auto; padding: 24px 24px 64px; }
+  header.top {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 16px; margin-bottom: 18px;
+  }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .brand .logo {
+    width: 42px; height: 42px; border-radius: 10px;
+    background: linear-gradient(135deg, #4f8cff, #21c07a);
+    display: grid; place-items: center; font-weight: 800; color: white; font-size: 20px;
+    box-shadow: var(--shadow);
+  }
+  .brand h1 { margin: 0; font-size: 20px; font-weight: 700; letter-spacing: 0.2px; }
+  .brand .sub { color: var(--muted); font-size: 12px; margin-top: 2px; }
+
+  .kpis {
+    display: grid; grid-template-columns: repeat(5, minmax(0,1fr));
+    gap: 14px; margin-bottom: 14px;
+  }
+  .kpi {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 14px; padding: 14px 16px; box-shadow: var(--shadow);
+  }
+  .kpi .label { color: var(--muted); font-size: 12px; letter-spacing: 0.4px; text-transform: uppercase; }
+  .kpi .value { font-size: 22px; font-weight: 700; margin-top: 6px; }
+  .kpi .delta { font-size: 12px; margin-top: 4px; }
+  .pos { color: var(--green); }
+  .neg { color: var(--red); }
+
+  .controls {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 14px; padding: 14px 16px; box-shadow: var(--shadow);
+    display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
+  .controls input[type="text"] {
+    flex: 1 1 280px; min-width: 240px;
+    background: var(--panel-2); color: var(--text);
+    border: 1px solid var(--border); border-radius: 10px;
+    padding: 10px 12px; font-size: 13px; font-family: inherit;
+  }
+  .btn {
+    background: linear-gradient(180deg, #4f8cff, #3b75e6);
+    color: white; border: 0; border-radius: 10px;
+    padding: 10px 16px; font-weight: 600; font-size: 13px; cursor: pointer;
+    box-shadow: 0 4px 12px rgba(79,140,255,0.35);
+    white-space: nowrap;
+  }
+  .btn.secondary {
+    background: var(--panel-2); color: var(--text); border: 1px solid var(--border);
+    box-shadow: none;
+  }
+  .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  .progress-wrap { flex: 0 0 100%; display: none; }
+  .progress { height: 6px; background: var(--panel-2); border-radius: 999px; overflow: hidden; border: 1px solid var(--border); }
+  .progress > div { height: 100%; background: linear-gradient(90deg, #4f8cff, #21c07a); width: 0%; transition: width 0.2s; }
+  .progress-label { color: var(--muted); font-size: 11.5px; margin-top: 6px; }
+
+  .table-wrap {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 14px; overflow: hidden; box-shadow: var(--shadow);
+    max-height: 70vh; overflow-y: auto;
+  }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead th {
+    text-align: left; background: var(--panel-2); color: var(--muted);
+    font-weight: 600; font-size: 11px; letter-spacing: 0.6px; text-transform: uppercase;
+    padding: 11px 12px; border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; z-index: 2;
+    cursor: pointer; user-select: none;
+  }
+  thead th:hover { color: var(--text); }
+  thead th .arrow { opacity: 0.4; font-size: 10px; }
+  thead th.sorted .arrow { opacity: 1; color: var(--accent-2); }
+  tbody td {
+    padding: 10px 12px; border-bottom: 1px solid rgba(255,255,255,0.04);
+    vertical-align: middle;
+  }
+  tbody tr:hover { background: rgba(79,140,255,0.05); }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .sym {
+    display: inline-block; padding: 3px 7px; border-radius: 6px;
+    background: rgba(79,140,255,0.12); color: var(--accent-2);
+    font-weight: 700; font-size: 11.5px; letter-spacing: 0.3px;
+  }
+  .sym.bse { background: rgba(245,183,59,0.12); color: var(--amber); }
+  .sym.fail { background: rgba(255,93,108,0.12); color: var(--red); }
+  .badge.market-open   { background: rgba(33,192,122,0.15); color: var(--green); }
+  .badge.market-closed { background: rgba(138,147,168,0.18); color: var(--muted); }
+  .badge.market-pre, .badge.market-post { background: rgba(245,183,59,0.15); color: var(--amber); }
+  .cache-tag { display: inline-block; margin-left: 6px; font-size: 9.5px; letter-spacing: 0.4px;
+    padding: 1px 5px; border-radius: 4px; background: rgba(245,183,59,0.15); color: var(--amber); vertical-align: 2px; }
+  .as-of { color: var(--muted); font-size: 10.5px; display: block; margin-top: 1px; }
+
+  .section-title { display: flex; align-items: center; justify-content: space-between;
+    margin: 22px 4px 10px; }
+  .section-title h2 { margin: 0; font-size: 15px; font-weight: 700; letter-spacing: 0.3px; }
+  .section-title .sub { color: var(--muted); font-size: 12px; }
+  .grand-total {
+    margin-top: 18px;
+    background: linear-gradient(135deg, rgba(79,140,255,0.1), rgba(33,192,122,0.08));
+    border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px;
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+  }
+  .grand-total .item .label { color: var(--muted); font-size: 11.5px;
+    text-transform: uppercase; letter-spacing: 0.5px; }
+  .grand-total .item .value { font-size: 22px; font-weight: 700; margin-top: 4px; }
+  .grand-total .item.combined .value { font-size: 26px; }
+  .gold-tag { display: inline-block; padding: 1px 6px; margin-left: 6px;
+    font-size: 9.5px; font-weight: 700; letter-spacing: 0.5px;
+    background: rgba(245,183,59,0.18); color: var(--amber); border-radius: 4px; vertical-align: 2px; }
+  .mf-tag { display: inline-block; padding: 1px 6px; margin-left: 4px;
+    font-size: 9.5px; font-weight: 700; letter-spacing: 0.3px;
+    background: rgba(122,169,255,0.15); color: var(--accent-2); border-radius: 4px; vertical-align: 2px; }
+  @media (max-width: 880px) {
+    .grand-total { grid-template-columns: repeat(2, 1fr); }
+  }
+  .name { color: var(--text); font-size: 13px; }
+  .name .ticker { color: var(--muted); font-size: 10.5px; display: block; margin-top: 1px; }
+
+  tfoot td {
+    padding: 14px 12px;
+    background: var(--panel-2);
+    font-weight: 700; border-top: 2px solid var(--border);
+    position: sticky; bottom: 0;
+  }
+  tfoot .total-label { color: var(--muted); text-transform: uppercase; letter-spacing: 0.6px; font-size: 11.5px; }
+
+  .status { color: var(--muted); font-size: 12px; margin-top: 10px; }
+  .badge { padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 600; }
+  .badge.live { background: rgba(33,192,122,0.15); color: var(--green); }
+  .badge.demo { background: rgba(245,183,59,0.15); color: var(--amber); }
+
+  @media (max-width: 1100px) {
+    .kpis { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 880px) {
+    .kpis { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* ==== Tabs ==== */
+  .tabs {
+    display: flex; gap: 2px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 20px;
+    overflow-x: auto;
+  }
+  .tab {
+    padding: 12px 20px; cursor: pointer;
+    color: var(--muted); font-weight: 600; font-size: 13.5px;
+    border-bottom: 2px solid transparent;
+    display: flex; align-items: center; gap: 8px;
+    white-space: nowrap; user-select: none;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--accent-2); border-bottom-color: var(--accent); }
+  .tab .count {
+    background: rgba(138,147,168,0.18); color: var(--muted);
+    padding: 1px 8px; border-radius: 999px; font-size: 11px; font-weight: 700;
+  }
+  .tab.active .count { background: rgba(79,140,255,0.2); color: var(--accent-2); }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="brand">
+      <div class="logo">₹</div>
+      <div>
+        <h1>Indian Stock Portfolio Dashboard--Saju</h1>
+        <div class="sub">
+          ICICI Direct Demat &middot;
+          <span id="modeBadge" class="badge demo">AWAITING LIVE PRICES</span>
+          <span id="marketBadge" class="badge" style="background:rgba(138,147,168,0.15);color:var(--muted);">MARKET: —</span>
+        </div>
+      </div>
+    </div>
+    <div style="text-align:right;">
+      <div style="color:var(--muted); font-size:12px;">Last refreshed</div>
+      <div id="lastRefresh" style="font-weight:600;">—</div>
+    </div>
+  </header>
+
+  <nav class="tabs" id="tabs">
+    <div class="tab active" data-tab="stocks">📈 Stocks <span class="count">113</span></div>
+    <div class="tab" data-tab="mfs">📊 Mutual Funds <span class="count">3</span></div>
+    <div class="tab" data-tab="combined">💼 Combined</div>
+  </nav>
+
+  <!-- ============== STOCKS TAB ============== -->
+  <div class="tab-panel active" data-tab="stocks">
+
+  <section class="kpis">
+    <div class="kpi">
+      <div class="label">Total Portfolio Value</div>
+      <div class="value" id="kpiTotal">—</div>
+      <div class="delta" id="kpiTotalDelta">click Fetch to load</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Day's P&L</div>
+      <div class="value" id="kpiDayPnl">—</div>
+      <div class="delta" id="kpiDayPnlPct">&nbsp;</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Holdings</div>
+      <div class="value" id="kpiCount">0</div>
+      <div class="delta" id="kpiCountSub">stocks tracked</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Top Mover</div>
+      <div class="value" id="kpiTopMover" style="font-size:18px;">—</div>
+      <div class="delta" id="kpiTopMoverPct">&nbsp;</div>
+    </div>
+  </section>
+
+  <section class="controls">
+    <input type="text" id="searchInput" placeholder="🔍 Search by name or symbol…" />
+    <button class="btn secondary" id="exportBtn" type="button">Export CSV</button>
+    <button class="btn" id="refreshBtn" type="button">⟳ Fetch Live Prices</button>
+    <div class="progress-wrap" id="progressWrap">
+      <div class="progress"><div id="progressBar"></div></div>
+      <div class="progress-label" id="progressLabel">—</div>
+    </div>
+  </section>
+
+  <div class="table-wrap">
+    <table id="ptable">
+      <thead>
+        <tr>
+          <th data-sort="icici" style="width:90px;">ICICI <span class="arrow">↕</span></th>
+          <th data-sort="nse" style="width:120px;">NSE/BSE <span class="arrow">↕</span></th>
+          <th data-sort="name">Stock Name <span class="arrow">↕</span></th>
+          <th data-sort="price" class="num">Price (₹) <span class="arrow">↕</span></th>
+          <th data-sort="qty" class="num">Qty <span class="arrow">↕</span></th>
+          <th data-sort="dayChg" class="num">Day Δ ₹ <span class="arrow">↕</span></th>
+          <th data-sort="dayPct" class="num">Day % <span class="arrow">↕</span></th>
+          <th data-sort="value" class="num">Total Value (₹) <span class="arrow">↕</span></th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+      <tfoot>
+        <tr>
+          <td colspan="3" class="total-label">Portfolio Total</td>
+          <td class="num" id="footPrice">—</td>
+          <td class="num" id="footQty">—</td>
+          <td class="num" id="footDayChg">—</td>
+          <td class="num" id="footDayPct">—</td>
+          <td class="num" id="footTotal">—</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <div class="status" id="status">
+    Loaded <b>113 holdings</b> from your ICICI Direct demat. Click <b>Fetch Live Prices</b> to pull live quotes from Yahoo Finance — the dashboard tries NSE first, then BSE as fallback. Microcap and suspended scrips may show as failed; you can still see the rest.
+  </div>
+
+  </div><!-- /tab-panel stocks -->
+
+  <!-- ============== MUTUAL FUNDS TAB ============== -->
+  <div class="tab-panel" data-tab="mfs">
+
+  <section class="kpis">
+    <div class="kpi">
+      <div class="label">Total Invested</div>
+      <div class="value" id="mfKpiInvested">—</div>
+      <div class="delta">cost basis across 3 funds</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Current Value</div>
+      <div class="value" id="mfKpiCurrent">—</div>
+      <div class="delta" id="mfKpiNavDate">NAV as on 30-Apr-2026</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Unrealized P&L</div>
+      <div class="value" id="mfKpiUnrealized">—</div>
+      <div class="delta" id="mfKpiUnrealizedSub">&nbsp;</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Returns %</div>
+      <div class="value" id="mfKpiReturn">—</div>
+      <div class="delta" id="mfKpiReturnSub">absolute return</div>
+    </div>
+  </section>
+
+  <section class="controls">
+    <div style="flex:1; color:var(--muted); font-size:12px;" id="mfSub">
+      NAV as on 30-Apr-2026 (static) &middot; click Fetch Latest NAVs to refresh from AMFI
+    </div>
+    <button class="btn" id="mfRefreshBtn" type="button">⟳ Fetch Latest NAVs</button>
+  </section>
+
+  <div class="table-wrap" style="max-height:none;">
+    <table id="mftable">
+      <thead>
+        <tr>
+          <th>Fund Name</th>
+          <th class="num" style="width:110px;">NAV (₹)</th>
+          <th class="num" style="width:120px;">Units</th>
+          <th class="num" style="width:130px;">Invested (₹)</th>
+          <th class="num" style="width:130px;">Current (₹)</th>
+          <th class="num" style="width:130px;">Unrealized (₹)</th>
+          <th class="num" style="width:100px;">Returns %</th>
+        </tr>
+      </thead>
+      <tbody id="mftbody"></tbody>
+      <tfoot>
+        <tr>
+          <td class="total-label">Mutual Fund Total</td>
+          <td class="num">—</td>
+          <td class="num" id="mfFootUnits">—</td>
+          <td class="num" id="mfFootInvested">—</td>
+          <td class="num" id="mfFootCurrent">—</td>
+          <td class="num" id="mfFootUnrealized">—</td>
+          <td class="num" id="mfFootReturn">—</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  </div><!-- /tab-panel mfs -->
+
+  <!-- ============== COMBINED TAB ============== -->
+  <div class="tab-panel" data-tab="combined">
+
+  <div style="margin: 8px 4px 18px; color: var(--muted); font-size: 13px;">
+    Portfolio totals across both Stocks (live from NSE/BSE) and Mutual Funds (NAV from AMFI).
+    Numbers update automatically when you fetch fresh data on the other tabs.
+  </div>
+
+  <div class="grand-total">
+    <div class="item">
+      <div class="label">Stocks Value</div>
+      <div class="value" id="gtStocks">—</div>
+    </div>
+    <div class="item">
+      <div class="label">Mutual Funds Value</div>
+      <div class="value" id="gtMfs">—</div>
+    </div>
+    <div class="item combined">
+      <div class="label">Combined Portfolio</div>
+      <div class="value" id="gtCombined">—</div>
+    </div>
+    <div class="item">
+      <div class="label">Total Invested (MF) + Stocks Value</div>
+      <div class="value" id="gtPnl">—</div>
+    </div>
+  </div>
+
+  </div><!-- /tab-panel combined -->
+
+</div>
+
+<script>
+  // ---- Portfolio: 113 holdings from ICICI Direct demat ----
+  // Each row maps the ICICI internal code to its NSE ticker (best-effort).
+  // The fetcher tries .NS first, then .BO (BSE) as fallback.
+  const PORTFOLIO = [
+    { name: "AAA TECHNOLOGIES LIMITED",          icici: "AAATEC", nse: "AAATECH",     qty: 100 },
+    { name: "ADD SHOP E RETAIL LIMITED",         icici: "ADDPRO", nse: "ADDICTIVE",   qty: 101 },
+    { name: "INSPIRISYS SOLUTIONS LIMITED",      icici: "AFL",    nse: "INSPIRISYS",  qty: 100 },
+    { name: "AGS TRANSACT TECHNOLOGIES LTD",     icici: "AGSTRA", nse: "AGSTRA",      qty: 85 },
+    { name: "AJANTA SOYA LIMITED",               icici: "AJASOY", nse: "AJANTSOYA",   qty: 2 },
+    { name: "AMBUJA CEMENTS LTD",                icici: "AMBCE",  nse: "AMBUJACEM",   qty: 197 },
+    { name: "ANUH PHARMA LTD",                   icici: "ANUPHA", nse: "ANUHPHR",     qty: 100 },
+    { name: "ASIAN HOTELS (EAST) LIMITED",       icici: "ASIEAS", nse: "AHLEAST",     qty: 500 },
+    { name: "ASI INDUSTRIES LIMITED",            icici: "ASSSTO", nse: "ASIIND",      qty: 50 },
+    { name: "AVANTI FEEDS LTD",                  icici: "AVAFEE", nse: "AVANTIFEED",  qty: 100 },
+    { name: "AXIS BANK LIMITED",                 icici: "AXIBAN", nse: "AXISBANK",    qty: 36 },
+    { name: "BANK OF BARODA",                    icici: "BANBAR", nse: "BANKBARODA",  qty: 250 },
+    { name: "BANAS FINANCE LIMITED",             icici: "BANFIN", nse: "BANAS",       qty: 1 },
+    { name: "BERYL SECURITIES LTD",              icici: "BERSEC", nse: "BERYL",       qty: 50 },
+    { name: "BHARAT ELECTRONICS LTD",            icici: "BHAELE", nse: "BEL",         qty: 190 },
+    { name: "BHARAT HEAVY ELECTRICALS LTD",      icici: "BHEL",   nse: "BHEL",        qty: 250 },
+    { name: "BODAL CHEMICALS LTD",               icici: "BODCHE", nse: "BODALCHEM",   qty: 20 },
+    { name: "CALIFORNIA SOFTWARE CO LTD",        icici: "CALSOF", nse: "CALSOFT",     qty: 1000 },
+    { name: "COX AND KINGS FINANCIAL SER LTD",   icici: "CNKFIN", nse: "EZYINFRA",    qty: 33 },
+    { name: "COX AND KINGS LIMITED",             icici: "CNKLIM", nse: "COX&KINGS",   qty: 100 },
+    { name: "CPSE ETF",                          icici: "CPSETF", nse: "CPSEETF",     qty: 2500 },
+    { name: "DAVANGERE SUGAR COMPANY LTD",       icici: "DAVSUG", nse: "DAVANGERE",   qty: 500 },
+    { name: "DELHIVERY LIMITED",                 icici: "DELLIM", nse: "DELHIVERY",   qty: 10 },
+    { name: "DEVYANI INTERNATIONAL LIMITED",     icici: "DEVIN",  nse: "DEVYANI",     qty: 50 },
+    { name: "DIVIS LABORATORIES LIMITED",        icici: "DIVLAB", nse: "DIVISLAB",    qty: 12 },
+    { name: "DOLAT ALGOTECH LIMITED",            icici: "DOLINV", nse: "DOLATALGO",   qty: 2 },
+    { name: "DPSC Limited",                      icici: "DPSLIM", nse: "DPSCLTD",     qty: 100 },
+    { name: "EASY TRIP PLANNERS LIMITED",        icici: "EASTRI", nse: "EASEMYTRIP",  qty: 4000 },
+    { name: "EIH LIMITED",                       icici: "EIHLIM", nse: "EIHOTEL",     qty: 50 },
+    { name: "ELECTROSTEEL CASTINGS LTD",         icici: "ELECAS", nse: "ELECTCAST",   qty: 501 },
+    { name: "EXIDE INDUSTRIES LTD",              icici: "EXIIND", nse: "EXIDEIND",    qty: 40 },
+    { name: "FCS SOFTWARE SOLUTIONS LIMITED",    icici: "FCSSOF", nse: "FCSSOFT",     qty: 1000 },
+    { name: "FILATEX FASHIONS LIMITED",          icici: "FILFAS", nse: "FILATFASH",   qty: 1000 },
+    { name: "FIRSTSOURCE SOLUTIONS LTD",         icici: "FIRSOU", nse: "FSL",         qty: 100 },
+    { name: "FUTURE RETAIL LIMITED",             icici: "FUTRE",  nse: "FRETAIL",     qty: 500 },
+    { name: "GENNEX LABORATORIES LIMITED",       icici: "GENLAB", nse: "GENNEX",      qty: 9990 },
+    { name: "GMR AIRPORTS LIMITED",              icici: "GMRINF", nse: "GMRAIRPORT",  qty: 100 },
+    { name: "GMR POWER AND URBAN INFRA LTD",     icici: "GMRPOW", nse: "GMRP&UI",     qty: 10 },
+    { name: "HCL INFOSYSTEMS LTD",               icici: "HCLINF", nse: "HCL-INSYS",   qty: 1000 },
+    { name: "HDFC BANK LIMITED",                 icici: "HDFBAN", nse: "HDFCBANK",    qty: 50 },
+    { name: "HINDUSTAN CONSTRUCTION CO LTD",     icici: "HINCON", nse: "HCC",         qty: 260 },
+    { name: "HINDUSTAN ZINC LTD",                icici: "HINZIN", nse: "HINDZINC",    qty: 30 },
+    { name: "ICICI BANK LIMITED",                icici: "ICIBAN", nse: "ICICIBANK",   qty: 27 },
+    { name: "ICICI PRUDENTIAL GOLD ETF",         icici: "ICIGOL", nse: "GOLDIETF",    qty: 42 },
+    { name: "IGARASHI MOTORS INDIA LIMITED",     icici: "IGAMOT", nse: "IGARASHI",    qty: 42 },
+    { name: "INDIA CEMENTS LTD",                 icici: "INDCEM", nse: "INDIACEM",    qty: 50 },
+    { name: "INDIAN RAILWAY FIN CORP LTD",       icici: "INDR",   nse: "IRFC",        qty: 60 },
+    { name: "AVENUESAI LIMITED",                 icici: "INFINC", nse: "AVENUESAI",   qty: 400 },
+    { name: "JAIPRAKASH ASSOCIATES LIMITED",     icici: "JAIASS", nse: "JPASSOCIAT",  qty: 157 },
+    { name: "JAIN IRRIGATION SYSTEMS LTD",       icici: "JAIIRR", nse: "JISLJALEQS",  qty: 101 },
+    { name: "JAYASWAL NECO INDUSTRIES LTD",      icici: "JAYNE",  nse: "JAYNECOIND",  qty: 1 },
+    { name: "JIO FINANCIAL SERVICES LIMITED",    icici: "JIOFIN", nse: "JIOFIN",      qty: 65 },
+    { name: "JK TYRE AND INDUSTRIES LIMITED",    icici: "JKTYRE", nse: "JKTYRE",      qty: 620 },
+    { name: "JUNIPER HOTELS LTD",                icici: "JUNHOT", nse: "JUNIPER",     qty: 40 },
+    { name: "KANSAI NEROLAC PAINTS",             icici: "KANNER", nse: "KANSAINER",   qty: 100 },
+    { name: "KARNATAKA BANK LTD",                icici: "KARBAN", nse: "KTKBANK",     qty: 270 },
+    { name: "K C P SUGAR AND INDUSTRIES COR",    icici: "KCPSUG", nse: "KCPSUGIND",   qty: 100 },
+    { name: "KITEX GARMENTS LTD",                icici: "KITGAR", nse: "KITEX",       qty: 543 },
+    { name: "K M SUGAR MILLS LTD",               icici: "KMSUG",  nse: "KMSUGAR",     qty: 50 },
+    { name: "KOTHARI PETROCHEMICALS LIMITED",    icici: "KOTPET", nse: "KOTHARIPET",  qty: 250 },
+    { name: "BIRLASOFT LIMITED",                 icici: "KPITEC", nse: "BSOFT",       qty: 50 },
+    { name: "LANCOR HOLDINGS LIMITED",           icici: "LANHOL", nse: "LANCOR",      qty: 50 },
+    { name: "LARSEN AND TOUBRO LIMITED",         icici: "LARTOU", nse: "LT",          qty: 18 },
+    { name: "LE TRAVENUES TECHNOLOGY LTD",       icici: "LETRA",  nse: "IXIGO",       qty: 50 },
+    { name: "LKP SECURITIES LIMITED",            icici: "LKPSEC", nse: "LKPSEC",      qty: 500 },
+    { name: "MANGALAM GLOBAL ENTERPRISE LTD",    icici: "MANGLO", nse: "MANGLOBAL",   qty: 2000 },
+    { name: "MAYUR UNIQUOTERS LTD",              icici: "MAYUNI", nse: "MAYURUNIQ",   qty: 71 },
+    { name: "UNO Minda Limited",                 icici: "MININD", nse: "UNOMINDA",    qty: 12 },
+    { name: "MOONGIPA CAPITAL FINANCE LTD",      icici: "MOOCAP", nse: "MOONGIPAC",   qty: 50 },
+    { name: "NETWORK 18 MEDIA & INVESTMENTS",    icici: "NETW18", nse: "NETWORK18",   qty: 116 },
+    { name: "NHPC LIMITED",                      icici: "NHPC",   nse: "NHPC",        qty: 101 },
+    { name: "NIRAJ CEMENT STRUCTURALS LIMITED",  icici: "NICEME", nse: "NIRAJ",       qty: 50 },
+    { name: "ODYSSEY TECHNOLOGIES LTD",          icici: "ODYTEC", nse: "ODYSSEY",     qty: 100 },
+    { name: "OLA ELECTRIC MOBILITY LIMITED",     icici: "OLAELE", nse: "OLAELEC",     qty: 50 },
+    { name: "ONE 97 COMMUNICATIONS PAYTM",       icici: "ONE97",  nse: "PAYTM",       qty: 6 },
+    { name: "ORIENTAL HOTELS LTD",               icici: "ORIHOT", nse: "ORIENTHOT",   qty: 164 },
+    { name: "PANACEA BIOTEC LTD",                icici: "PANBIO", nse: "PANACEABIO",  qty: 1268 },
+    { name: "PETRONET LNG LIMITED",              icici: "PETLNG", nse: "PETRONET",    qty: 50 },
+    { name: "FAMILY CARE HOSPITALS LIMITED",     icici: "PHAOFF", nse: "FAMCARE",     qty: 1 },
+    { name: "PCBL CHEMICAL LIMITED",             icici: "PHICAR", nse: "PCBL",        qty: 421 },
+    { name: "PTC INDIA LIMITED",                 icici: "POWTRA", nse: "PTC",         qty: 200 },
+    { name: "PRICOL LIMITED",                    icici: "PRILI",  nse: "PRICOLLTD",   qty: 125 },
+    { name: "PTC INDIA FINANCIAL SERVICES LTD",  icici: "PTCIND", nse: "PFS",         qty: 100 },
+    { name: "RAMKRISHNA FORGINGS LIMITED",       icici: "RAMFOR", nse: "RKFORGE",     qty: 102 },
+    { name: "RATTANINDIA ENTERPRISES LTD",       icici: "RATINF", nse: "RTNINDIA",    qty: 51 },
+    { name: "RAVINDER HEIGHTS LIMITED",          icici: "RAVHEI", nse: "RAVINDER",    qty: 1268 },
+    { name: "RELIANCE INDUSTRIES",               icici: "RELIND", nse: "RELIANCE",    qty: 51 },
+    { name: "SARVESHWAR FOODS LTD",              icici: "SARFOO", nse: "SARVESHWAR",  qty: 800 },
+    { name: "SBI CARDS AND PAYMENT SERV LTD",    icici: "SBICAR", nse: "SBICARD",     qty: 24 },
+    { name: "SHALIMAR PRODUCTIONS LTD",          icici: "SHAAGR", nse: "SHALPROD",    qty: 2000 },
+    { name: "SHIVA CEMENT LTD",                  icici: "SHICEM", nse: "SHIVACEM",    qty: 200 },
+    { name: "SINCLAIRS HOTELS LTD",              icici: "SINHOT", nse: "SINCHOTEL",   qty: 450 },
+    { name: "SPEL SEMICONDUCTOR LIMITED",        icici: "SPESEM", nse: "SPELSEMI",    qty: 1050 },
+    { name: "STATE BANK OF INDIA",               icici: "STABAN", nse: "SBIN",        qty: 50 },
+    { name: "TANEJA AEROSPACE & AVIATION LTD",   icici: "TANAER", nse: "TANEJA",      qty: 50 },
+    { name: "TATA POWER CO LTD",                 icici: "TATPOW", nse: "TATAPOWER",   qty: 225 },
+    { name: "TATA STEEL LIMITED",                icici: "TATSTE", nse: "TATASTEEL",   qty: 286 },
+    { name: "TATA CONSULTANCY SERVICES LTD",     icici: "TCS",    nse: "TCS",         qty: 30 },
+    { name: "TEXMACO RAIL & ENGINEERING LIMITED",icici: "TEXRAI", nse: "TEXRAIL",     qty: 50 },
+    { name: "TRIVENI GLASS LIMITED",             icici: "TRIGLA", nse: "TRIVENIGLAS", qty: 2000 },
+    { name: "TRIDENT LTD",                       icici: "TRILTD", nse: "TRIDENT",     qty: 1 },
+    { name: "TWINSTAR INDUSTRIES LIMITED",       icici: "TWISOF", nse: "TWINSTAR",    qty: 10000 },
+    { name: "UNION BANK OF INDIA",               icici: "UNIBAN", nse: "UNIONBANK",   qty: 50 },
+    { name: "UNITED SPIRITS LIMITED",            icici: "UNISPI", nse: "MCDOWELL-N",  qty: 100 },
+    { name: "VA TECH WABAG LIMITED",             icici: "VATWAB", nse: "WABAG",       qty: 100 },
+    { name: "VIKAS LIFECARE LIMITED",            icici: "VIKMUL", nse: "VIKASLIFE",   qty: 500 },
+    { name: "WEBSOL ENERGY SYSTEM LIMITED",      icici: "WEBENE", nse: "WEBELSOLAR",  qty: 150 },
+    { name: "WELSPUN LIVING LIMITED",            icici: "WELIND", nse: "WELSPUNLIV",  qty: 20 },
+    { name: "YES BANK LIMITED",                  icici: "YESBAN", nse: "YESBANK",     qty: 600 },
+    { name: "ZEE ENTERTAINMENT ENTERPRISES",     icici: "ZEEENT", nse: "ZEEL",        qty: 50 },
+    { name: "ZEE MEDIA CORPORATION LIMITED",     icici: "ZEEMED", nse: "ZEEMEDIA",    qty: 100 },
+    { name: "ETERNAL LIMITED",                   icici: "ZOMLIM", nse: "ETERNAL",     qty: 71 },
+    { name: "ZUARI AGRO CHEMICALS LIMITED",      icici: "ZUAAGR", nse: "ZUARI",       qty: 100 }
+  ];
+
+  // ---- Mutual Funds ----
+  // schemeCode is the AMFI / mfapi.in code. Best-guess for now —
+  // if a code is wrong, the live NAV fetch will fail and we'll keep static values.
+  const MUTUAL_FUNDS = [
+    {
+      name: "ICICI Prudential Large Cap Fund (Bluechip) - Growth",
+      schemeCode: "100355",
+      invested: 64996.61,
+      initialCurrent: 65634.94,
+      initialNav: 106.6600,
+      navDate: "30-Apr-2026"
+    },
+    {
+      name: "Nippon India Large Cap Fund - Growth Plan - Growth",
+      schemeCode: "118269",
+      invested: 135693.28,
+      initialCurrent: 129590.54,
+      initialNav: 88.6707,
+      navDate: "30-Apr-2026"
+    },
+    {
+      name: "ICICI Prudential Smallcap Fund - Growth",
+      schemeCode: "120828",
+      invested: 199989.85,
+      initialCurrent: 270582.88,
+      initialNav: 84.7300,
+      navDate: "30-Apr-2026"
+    }
+  ];
+
+  // ---- State ----
+  let rows = PORTFOLIO.map(r => ({
+    ...r, price: 0, prevClose: 0, exchange: null, status: "pending",
+    lastTradeTime: 0, marketState: null, cached: false
+  }));
+  let mfRows = MUTUAL_FUNDS.map(m => ({
+    ...m,
+    units: m.initialCurrent / m.initialNav,
+    nav: m.initialNav,
+    currentAmount: m.initialCurrent,
+    status: "static"   // "static" | "live" | "fail"
+  }));
+  let sortKey = "value", sortDir = -1;
+  let searchQuery = "";
+  let overallMarketState = null;
+  const CACHE_KEY = "portfolioPrices_v1";
+
+  // ---- Cache (localStorage) ----
+  function saveCache() {
+    try {
+      const snap = {};
+      rows.forEach(r => {
+        if (r.status === "ok" && !r.cached) {
+          snap[r.icici] = {
+            price: r.price, prevClose: r.prevClose, exchange: r.exchange,
+            lastTradeTime: r.lastTradeTime, marketState: r.marketState,
+            savedAt: Date.now()
+          };
+        }
+      });
+      localStorage.setItem(CACHE_KEY, JSON.stringify({ snap, savedAt: Date.now() }));
+    } catch (_) {}
+  }
+  function loadCache() {
+    try {
+      const raw = localStorage.getItem(CACHE_KEY);
+      if (!raw) return null;
+      return JSON.parse(raw);
+    } catch (_) { return null; }
+  }
+  function applyCacheToRow(r, c) {
+    r.price = c.price; r.prevClose = c.prevClose;
+    r.exchange = c.exchange; r.lastTradeTime = c.lastTradeTime || 0;
+    r.marketState = c.marketState; r.status = "ok"; r.cached = true;
+  }
+
+  // ---- Helpers ----
+  const inr0 = v => "₹" + (v ?? 0).toLocaleString("en-IN", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+  const inr = v => "₹" + (v ?? 0).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const num = (v, d=2) => (v ?? 0).toLocaleString("en-IN", { minimumFractionDigits: d, maximumFractionDigits: d });
+  const pct = v => (v >= 0 ? "+" : "") + v.toFixed(2) + "%";
+  const signed = v => (v >= 0 ? "+" : "") + v.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const cls = v => v >= 0 ? "pos" : "neg";
+
+  function setMode(mode) {
+    const b = document.getElementById("modeBadge");
+    if (mode === "live")        { b.textContent = "LIVE";   b.className = "badge live"; }
+    else if (mode === "cached") { b.textContent = "CACHED"; b.className = "badge demo"; }
+    else                        { b.textContent = "AWAITING LIVE PRICES"; b.className = "badge demo"; }
+  }
+  function setMarketBadge(state) {
+    const b = document.getElementById("marketBadge");
+    const map = {
+      "REGULAR": ["MARKET: OPEN", "market-open"],
+      "PRE":     ["MARKET: PRE-OPEN", "market-pre"],
+      "POST":    ["MARKET: POST-CLOSE", "market-post"],
+      "POSTPOST":["MARKET: CLOSED", "market-closed"],
+      "PREPRE":  ["MARKET: CLOSED", "market-closed"],
+      "CLOSED":  ["MARKET: CLOSED", "market-closed"]
+    };
+    const m = map[state] || ["MARKET: —", ""];
+    b.textContent = m[0];
+    b.className = "badge " + m[1];
+  }
+  // Compute IST time → infer if NSE should be open (9:15–15:30 IST, Mon–Fri)
+  function computeMarketStateIST() {
+    const now = new Date();
+    const ist = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Kolkata" }));
+    const day = ist.getDay(); // 0 = Sun, 6 = Sat
+    if (day === 0 || day === 6) return "CLOSED";
+    const mins = ist.getHours() * 60 + ist.getMinutes();
+    if (mins >= 555 && mins <= 930) return "REGULAR";   // 9:15–15:30
+    if (mins >= 540 && mins < 555)  return "PRE";       // 9:00–9:15
+    if (mins > 930  && mins <= 960) return "POST";      // 15:30–16:00
+    return "CLOSED";
+  }
+  function fmtTradeTime(ts) {
+    if (!ts) return "";
+    const d = new Date(ts * 1000);
+    return d.toLocaleString("en-IN", {
+      timeZone: "Asia/Kolkata",
+      day: "2-digit", month: "short",
+      hour: "2-digit", minute: "2-digit", hour12: false
+    });
+  }
+
+  function computeRow(r) {
+    const change = r.price - r.prevClose;
+    const changePct = r.prevClose ? (change / r.prevClose) * 100 : 0;
+    const value = r.price * r.qty;
+    const dayChg = change * r.qty;
+    return { change, changePct, value, dayChg };
+  }
+
+  function filteredSorted() {
+    const q = searchQuery.trim().toLowerCase();
+    let list = rows.slice();
+    if (q) list = list.filter(r =>
+      r.name.toLowerCase().includes(q) ||
+      r.icici.toLowerCase().includes(q) ||
+      r.nse.toLowerCase().includes(q)
+    );
+    const dir = sortDir;
+    list.sort((a, b) => {
+      let av, bv;
+      const ca = computeRow(a), cb = computeRow(b);
+      switch (sortKey) {
+        case "icici": av = a.icici; bv = b.icici; break;
+        case "nse":   av = a.nse;   bv = b.nse;   break;
+        case "name":  av = a.name;  bv = b.name;  break;
+        case "price": av = a.price; bv = b.price; break;
+        case "qty":   av = a.qty;   bv = b.qty;   break;
+        case "dayChg":av = ca.dayChg; bv = cb.dayChg; break;
+        case "dayPct":av = ca.changePct; bv = cb.changePct; break;
+        case "value": av = ca.value; bv = cb.value; break;
+      }
+      if (typeof av === "string") return av.localeCompare(bv) * dir;
+      return ((av || 0) - (bv || 0)) * dir;
+    });
+    return list;
+  }
+
+  function render() {
+    const tb = document.getElementById("tbody");
+    tb.innerHTML = "";
+    const list = filteredSorted();
+    let totalValue = 0, totalDayChg = 0, totalPrev = 0, totalPrice = 0, totalQty = 0;
+    let topMover = null, fetchedCount = 0, failedCount = 0;
+
+    rows.forEach(r => {
+      const c = computeRow(r);
+      if (r.status === "ok") {
+        totalValue += c.value;
+        totalDayChg += c.dayChg;
+        totalPrev += r.prevClose * r.qty;
+        totalPrice += r.price;
+        totalQty += r.qty;
+        fetchedCount++;
+        if (!topMover || Math.abs(c.changePct) > Math.abs(topMover.pct)) {
+          topMover = { sym: r.nse, pct: c.changePct };
+        }
+      } else if (r.status === "fail") {
+        failedCount++;
+        totalQty += r.qty;
+      } else {
+        totalQty += r.qty;
+      }
+    });
+
+    list.forEach(r => {
+      const c = computeRow(r);
+      const symClass = r.exchange === "BSE" ? "sym bse" : (r.status === "fail" ? "sym fail" : "sym");
+      const exTag = r.exchange === "BSE" ? ".BO" : (r.exchange === "NSE" ? ".NS" : "—");
+      const cacheTag = r.cached ? '<span class="cache-tag">CACHED</span>' : '';
+      const asOf = r.lastTradeTime
+        ? `<span class="as-of">${r.nse}${exTag} &middot; as of ${fmtTradeTime(r.lastTradeTime)} IST</span>`
+        : `<span class="ticker">${r.nse}${exTag}</span>`;
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td><span class="sym" style="background:rgba(138,147,168,0.12);color:var(--muted);">${r.icici}</span></td>
+        <td><span class="${symClass}">${r.nse}</span>${cacheTag}</td>
+        <td><div class="name">${r.name}${asOf}</div></td>
+        <td class="num">${r.status === "ok" ? num(r.price) : (r.status === "fail" ? "<span style='color:var(--red)'>fail</span>" : "—")}</td>
+        <td class="num">${r.qty.toLocaleString("en-IN")}</td>
+        <td class="num ${cls(c.change)}">${r.status === "ok" ? signed(c.dayChg) : "—"}</td>
+        <td class="num ${cls(c.change)}">${r.status === "ok" ? pct(c.changePct) : "—"}</td>
+        <td class="num"><b>${r.status === "ok" ? inr(c.value) : "—"}</b></td>
+      `;
+      tb.appendChild(tr);
+    });
+
+    // Footer totals
+    document.getElementById("footPrice").textContent = totalPrice ? num(totalPrice) : "—";
+    document.getElementById("footQty").textContent = totalQty.toLocaleString("en-IN");
+    const footChg = document.getElementById("footDayChg");
+    footChg.textContent = totalDayChg ? signed(totalDayChg) : "—";
+    footChg.className = "num " + cls(totalDayChg);
+    const totalPct = totalPrev ? (totalDayChg / totalPrev) * 100 : 0;
+    const footPct = document.getElementById("footDayPct");
+    footPct.textContent = totalPrev ? pct(totalPct) : "—";
+    footPct.className = "num " + cls(totalDayChg);
+    document.getElementById("footTotal").textContent = totalValue ? inr(totalValue) : "—";
+
+    // KPIs
+    //document.getElementById("kpiPriceSum").textContent = totalPrice ? inr(totalPrice) : "—";
+   // document.getElementById("kpiPriceSumSub").textContent = totalPrice ? `across ${fetchedCount} priced stocks` : "sum of price column";
+    document.getElementById("kpiTotal").textContent = totalValue ? inr0(totalValue) : "—";
+    document.getElementById("kpiTotalDelta").textContent = totalValue ? `${fetchedCount} of ${rows.length} priced` : "click Fetch to load";
+    const dayEl = document.getElementById("kpiDayPnl");
+    if (totalValue) {
+      dayEl.textContent = (totalDayChg >= 0 ? "+" : "−") + inr0(Math.abs(totalDayChg)).replace("₹","₹");
+      dayEl.className = "value " + cls(totalDayChg);
+      document.getElementById("kpiDayPnlPct").textContent = pct(totalPct);
+      document.getElementById("kpiDayPnlPct").className = "delta " + cls(totalDayChg);
+    } else {
+      dayEl.textContent = "—"; dayEl.className = "value";
+      document.getElementById("kpiDayPnlPct").textContent = "";
+    }
+    document.getElementById("kpiCount").textContent = rows.length;
+    document.getElementById("kpiCountSub").textContent = failedCount ? `${failedCount} failed lookup` : "stocks tracked";
+    if (topMover) {
+      document.getElementById("kpiTopMover").textContent = topMover.sym;
+      const tEl = document.getElementById("kpiTopMoverPct");
+      tEl.textContent = pct(topMover.pct);
+      tEl.className = "delta " + cls(topMover.pct);
+    }
+
+    // Update sort arrows
+    document.querySelectorAll("#ptable thead th").forEach(th => {
+      th.classList.remove("sorted");
+      const a = th.querySelector(".arrow");
+      if (a) a.textContent = "↕";
+      if (th.dataset.sort === sortKey) {
+        th.classList.add("sorted");
+        if (a) a.textContent = sortDir === 1 ? "↑" : "↓";
+      }
+    });
+
+    // Keep the grand-total panel in sync whenever stocks re-render
+    if (typeof renderGrandTotal === "function") renderGrandTotal();
+  }
+
+  // ---- Live fetch — TradingView scanner (batch) + Yahoo v8/chart proxy fallback ----
+
+  // ── TradingView scanner: ONE request for all symbols ──
+  // Sends JSON as text/plain to avoid CORS preflight; TradingView parses it anyway
+  async function tvScan(tickers) {
+    const resp = await fetch("https://scanner.tradingview.com/india/scan", {
+      method: "POST",
+      body: JSON.stringify({ symbols: { tickers, query: { types: [] } }, columns: ["close","change","change_p"] }),
+      signal: AbortSignal.timeout(15000)
+      // No Content-Type header → browser defaults to text/plain → no CORS preflight
+    });
+    if (!resp.ok) throw new Error("TV HTTP " + resp.status);
+    const json = await resp.json();
+    const map = {};
+    for (const { s, d } of (json.data || [])) {
+      if (!s || !d?.[0]) continue;
+      const [exch, sym] = s.split(":");
+      map[sym + "." + exch] = { // e.g. "AXISBANK.NSE"
+        price: d[0],
+        prevClose: d[0] - (d[1] || 0),
+        name: null, lastTradeTime: 0, marketState: null, _exch: exch
+      };
+    }
+    return map;
+  }
+
+  // ── Yahoo Finance v8/chart — tries multiple proxy methods in order ──
+  async function fetchYahoo(sym, suffix) {
+    const yUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${sym}${suffix}`;
+    // Strategy list: direct → thingproxy → codetabs → allorigins /get
+    const strategies = [
+      async () => { const r = await fetch(yUrl, { signal: AbortSignal.timeout(5000) }); if (!r.ok) throw r.status; return r.json(); },
+      async () => { const r = await fetch(`https://thingproxy.freeboard.io/fetch/${yUrl}`, { signal: AbortSignal.timeout(8000) }); if (!r.ok) throw r.status; return r.json(); },
+      async () => { const r = await fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(yUrl)}`, { signal: AbortSignal.timeout(8000) }); if (!r.ok) throw r.status; return r.json(); },
+      async () => { const r = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(yUrl)}`, { signal: AbortSignal.timeout(9000) }); if (!r.ok) throw r.status; const w = await r.json(); if (!w.contents) throw "empty"; return JSON.parse(w.contents); },
+    ];
+    for (const fn of strategies) {
+      try {
+        const json = await fn();
+        const meta = json?.chart?.result?.[0]?.meta;
+        if (meta?.regularMarketPrice) return {
+          price: meta.regularMarketPrice,
+          prevClose: meta.chartPreviousClose ?? meta.previousClose ?? 0,
+          name: meta.longName || meta.shortName,
+          lastTradeTime: meta.regularMarketTime || 0,
+          marketState: meta.marketState || null
+        };
+      } catch(e) {}
+    }
+    throw new Error("all failed");
+  }
+
+  function applyOk(r, d, ex) {
+    r.price = d.price; r.prevClose = d.prevClose; r.exchange = ex;
+    r.lastTradeTime = d.lastTradeTime; r.marketState = d.marketState;
+    r.status = "ok"; r.cached = false;
+    if (d.marketState && !overallMarketState) overallMarketState = d.marketState;
+  }
+
+  async function fetchLive() {
+    const btn = document.getElementById("refreshBtn");
+    btn.disabled = true; btn.textContent = "Fetching…";
+    const wrap = document.getElementById("progressWrap");
+    const bar = document.getElementById("progressBar");
+    const lbl = document.getElementById("progressLabel");
+    wrap.style.display = "block";
+    bar.style.width = "0%"; lbl.textContent = "Starting…";
+    document.getElementById("status").textContent = "Fetching live prices for " + rows.length + " holdings…";
+
+    const cached = loadCache();
+    const cacheSnap = cached?.snap || {};
+    overallMarketState = null;
+    rows.forEach(r => { r.status = "pending"; r.cached = false; });
+    render();
+
+    // ── Pass 1: TradingView scanner — batch NSE (one request for all stocks) ──
+    lbl.textContent = "Querying TradingView…";
+    let tvMap = {};
+    try {
+      tvMap = await tvScan(rows.map(r => `NSE:${r.nse}`));
+      bar.style.width = "35%";
+    } catch(e) {}
+
+    // BSE retry for NSE misses (one more TV request)
+    const bseMisses = rows.filter(r => !tvMap[r.nse + ".NSE"]);
+    if (bseMisses.length && Object.keys(tvMap).length > 0) { // only if TV is working
+      try {
+        const bseMap = await tvScan(bseMisses.map(r => `BSE:${r.nse}`));
+        Object.assign(tvMap, bseMap);
+        bar.style.width = "50%";
+      } catch(e) {}
+    }
+
+    // Apply TradingView results
+    rows.forEach(r => {
+      const d = tvMap[r.nse + ".NSE"] || tvMap[r.nse + ".BSE"];
+      if (d) applyOk(r, d, d._exch || "NSE");
+    });
+    const tvCount = rows.filter(r => r.status === "ok").length;
+    lbl.textContent = `TradingView: ${tvCount} priced. Fetching remaining via Yahoo…`;
+    render();
+
+    // ── Pass 2: Yahoo v8/chart (sequential) for anything TradingView missed ──
+    const missing = rows.filter(r => r.status === "pending");
+    for (let i = 0; i < missing.length; i++) {
+      const r = missing[i];
+      let got = false;
+      for (const [sym, suf] of [[r.nse,".NS"],[r.nse,".BO"],[r.icici,".BO"]]) {
+        try { applyOk(r, await fetchYahoo(sym, suf), suf===".NS"?"NSE":"BSE"); got=true; break; } catch(e) {}
+      }
+      if (!got) {
+        if (cacheSnap[r.icici]) applyCacheToRow(r, cacheSnap[r.icici]);
+        else r.status = "fail";
+      }
+      bar.style.width = Math.round(50 + (i+1)/missing.length * 50) + "%";
+      lbl.textContent = `Yahoo fallback: ${i+1} / ${missing.length}`;
+      if (i % 5 === 0) render();
+      if (missing.length > 5) await new Promise(res => setTimeout(res, 300));
+    }
+
+    bar.style.width = "100%";
+    render();
+
+    // Update market state badge (Yahoo-reported, with IST clock fallback)
+    setMarketBadge(overallMarketState || computeMarketStateIST());
+    const liveCount = rows.filter(r => r.status === "ok" && !r.cached).length;
+    setMode(liveCount > 0 ? "live" : "cached");
+
+    saveCache();
+    document.getElementById("lastRefresh").textContent = new Date().toLocaleString("en-IN");
+    const failed = rows.filter(r => r.status === "fail").length;
+    const cachedCount = rows.filter(r => r.cached).length;
+    let msg = failed
+      ? `<b>${liveCount}</b> live, <b>${cachedCount}</b> from cache, <b>${failed}</b> failed lookup. `
+      : `All ${liveCount} live prices loaded${cachedCount ? `, ${cachedCount} from cache` : ""}. `;
+    if (overallMarketState && overallMarketState !== "REGULAR") {
+      msg += `Markets are ${overallMarketState === "CLOSED" || overallMarketState === "POSTPOST" ? "closed" : overallMarketState.toLowerCase()} — showing last reported prices.`;
+    }
+    document.getElementById("status").innerHTML = msg;
+    btn.disabled = false; btn.textContent = "⟳ Fetch Live Prices";
+  }
+
+  // Hydrate prices from cache on page load (so user sees something even before fetch)
+  function hydrateFromCache() {
+    const cached = loadCache();
+    if (!cached || !cached.snap) return;
+    let count = 0;
+    rows.forEach(r => {
+      const c = cached.snap[r.icici];
+      if (c) { applyCacheToRow(r, c); count++; }
+    });
+    if (count > 0) {
+      setMode("cached");
+      const savedAt = new Date(cached.savedAt).toLocaleString("en-IN");
+      document.getElementById("lastRefresh").textContent = savedAt + " (cached)";
+      document.getElementById("status").innerHTML =
+        `Showing <b>${count}</b> last-reported prices from cache (saved ${savedAt}). Click <b>Fetch Live Prices</b> to refresh.`;
+    }
+    setMarketBadge(computeMarketStateIST());
+  }
+
+  // ---- Export ----
+  function exportCsv() {
+    const headers = ["ICICI","NSE_Symbol","Stock Name","Exchange","Price","Qty","Day Change","Day %","Total Value"];
+    const lines = [headers.join(",")];
+    rows.forEach(r => {
+      const c = computeRow(r);
+      const row = [
+        r.icici,
+        r.nse,
+        '"' + r.name.replace(/"/g,'""') + '"',
+        r.exchange || "",
+        r.status === "ok" ? r.price.toFixed(2) : "",
+        r.qty,
+        r.status === "ok" ? c.dayChg.toFixed(2) : "",
+        r.status === "ok" ? c.changePct.toFixed(2) : "",
+        r.status === "ok" ? c.value.toFixed(2) : ""
+      ];
+      lines.push(row.join(","));
+    });
+    const blob = new Blob([lines.join("\n")], { type: "text/csv" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `portfolio_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+  }
+
+  // ---- Mutual Fund rendering & live NAV fetch ----
+  function renderMfs() {
+    const tb = document.getElementById("mftbody");
+    tb.innerHTML = "";
+    let totalInvested = 0, totalCurrent = 0, totalUnits = 0;
+
+    mfRows.forEach(m => {
+      const unrealized = m.currentAmount - m.invested;
+      const returnPct = m.invested ? (unrealized / m.invested) * 100 : 0;
+      totalInvested += m.invested;
+      totalCurrent += m.currentAmount;
+      totalUnits += m.units;
+
+      const statusTag = m.status === "live"
+        ? '<span class="cache-tag" style="background:rgba(33,192,122,0.15);color:var(--green);">LIVE</span>'
+        : (m.status === "fail"
+          ? '<span class="cache-tag" style="background:rgba(255,93,108,0.15);color:var(--red);">STATIC</span>'
+          : '<span class="cache-tag">STATIC</span>');
+
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>
+          <div class="name">${m.name}<span class="gold-tag">GOLD</span><span class="mf-tag">MF</span>${statusTag}
+            <span class="as-of">Scheme ${m.schemeCode} &middot; NAV as on ${m.navDate}</span>
+          </div>
+        </td>
+        <td class="num">${num(m.nav, 4)}</td>
+        <td class="num">${num(m.units, 3)}</td>
+        <td class="num">${num(m.invested)}</td>
+        <td class="num"><b>${inr(m.currentAmount)}</b></td>
+        <td class="num ${cls(unrealized)}">${signed(unrealized)}</td>
+        <td class="num ${cls(unrealized)}">${pct(returnPct)}</td>
+      `;
+      tb.appendChild(tr);
+    });
+
+    const totalUnrealized = totalCurrent - totalInvested;
+    const totalReturnPct = totalInvested ? (totalUnrealized / totalInvested) * 100 : 0;
+    document.getElementById("mfFootUnits").textContent = num(totalUnits, 3);
+    document.getElementById("mfFootInvested").textContent = num(totalInvested);
+    document.getElementById("mfFootCurrent").textContent = inr(totalCurrent);
+    const fu = document.getElementById("mfFootUnrealized");
+    fu.textContent = signed(totalUnrealized);
+    fu.className = "num " + cls(totalUnrealized);
+    const fr = document.getElementById("mfFootReturn");
+    fr.textContent = pct(totalReturnPct);
+    fr.className = "num " + cls(totalUnrealized);
+
+    // MF tab KPI cards
+    document.getElementById("mfKpiInvested").textContent = inr(totalInvested);
+    document.getElementById("mfKpiCurrent").textContent = inr(totalCurrent);
+    const mfKu = document.getElementById("mfKpiUnrealized");
+    mfKu.textContent = (totalUnrealized >= 0 ? "+" : "−") + inr0(Math.abs(totalUnrealized));
+    mfKu.className = "value " + cls(totalUnrealized);
+    document.getElementById("mfKpiUnrealizedSub").textContent = pct(totalReturnPct);
+    document.getElementById("mfKpiUnrealizedSub").className = "delta " + cls(totalUnrealized);
+    const mfKr = document.getElementById("mfKpiReturn");
+    mfKr.textContent = pct(totalReturnPct);
+    mfKr.className = "value " + cls(totalUnrealized);
+    // Find the latest NAV date among the funds for the subtitle
+    const latestDate = mfRows.map(m => m.navDate).sort().pop() || "";
+    document.getElementById("mfKpiNavDate").textContent = "NAV as on " + latestDate;
+
+    renderGrandTotal();
+  }
+
+  function renderGrandTotal() {
+    const stocksValue = rows.reduce((s, r) =>
+      s + (r.status === "ok" ? r.price * r.qty : 0), 0);
+    const mfValue = mfRows.reduce((s, m) => s + m.currentAmount, 0);
+    const mfInvested = mfRows.reduce((s, m) => s + m.invested, 0);
+    const combined = stocksValue + mfValue;
+
+    document.getElementById("gtStocks").textContent = stocksValue ? inr0(stocksValue) : "—";
+    document.getElementById("gtMfs").textContent = mfValue ? inr0(mfValue) : "—";
+    document.getElementById("gtCombined").textContent = combined ? inr0(combined) : inr0(mfValue);
+    // Total invested in MFs + current stocks value (since we don't have stock invested cost)
+    document.getElementById("gtPnl").textContent = inr0(mfInvested + stocksValue);
+  }
+
+  async function fetchMfNav(schemeCode) {
+    const url = `https://api.mfapi.in/mf/${schemeCode}`;
+    const tryUrls = [url, `https://corsproxy.io/?` + encodeURIComponent(url)];
+    for (const u of tryUrls) {
+      try {
+        const r = await fetch(u);
+        if (!r.ok) continue;
+        const j = await r.json();
+        const latest = j?.data?.[0];
+        if (!latest) continue;
+        return { nav: parseFloat(latest.nav), date: latest.date };
+      } catch (_) {}
+    }
+    return null;
+  }
+
+  async function fetchMfNavs() {
+    const btn = document.getElementById("mfRefreshBtn");
+    btn.disabled = true; btn.textContent = "Fetching…";
+    document.getElementById("mfSub").textContent = "Fetching latest NAVs from AMFI…";
+
+    let okCount = 0;
+    await Promise.all(mfRows.map(async m => {
+      const result = await fetchMfNav(m.schemeCode);
+      if (result && result.nav > 0) {
+        m.nav = result.nav;
+        m.navDate = result.date;
+        m.currentAmount = m.units * result.nav;
+        m.status = "live";
+        okCount++;
+      } else {
+        m.status = "fail";
+      }
+    }));
+
+    renderMfs();
+    document.getElementById("mfSub").textContent = okCount === mfRows.length
+      ? `All ${okCount} NAVs updated live from AMFI.`
+      : `${okCount} of ${mfRows.length} NAVs updated. ${mfRows.length - okCount} kept static (scheme code may need correction).`;
+    btn.disabled = false; btn.textContent = "⟳ Fetch Latest NAVs";
+  }
+
+  // ---- Wire up ----
+  document.getElementById("refreshBtn").addEventListener("click", fetchLive);
+  document.getElementById("mfRefreshBtn").addEventListener("click", fetchMfNavs);
+  document.getElementById("exportBtn").addEventListener("click", exportCsv);
+  document.getElementById("searchInput").addEventListener("input", e => {
+    searchQuery = e.target.value;
+    render();
+  });
+  document.querySelectorAll("thead th[data-sort]").forEach(th => {
+    th.addEventListener("click", () => {
+      const k = th.dataset.sort;
+      if (sortKey === k) sortDir = -sortDir;
+      else { sortKey = k; sortDir = (k === "name" || k === "icici" || k === "nse") ? 1 : -1; }
+      render();
+    });
+  });
+
+  // ---- Tabs ----
+  function switchTab(tab) {
+    document.querySelectorAll(".tab").forEach(t =>
+      t.classList.toggle("active", t.dataset.tab === tab));
+    document.querySelectorAll(".tab-panel").forEach(p =>
+      p.classList.toggle("active", p.dataset.tab === tab));
+    try { localStorage.setItem("activeTab_v1", tab); } catch (_) {}
+  }
+  document.querySelectorAll(".tab").forEach(t =>
+    t.addEventListener("click", () => switchTab(t.dataset.tab)));
+
+  // Restore last-active tab
+  try {
+    const saved = localStorage.getItem("activeTab_v1");
+    if (saved && ["stocks","mfs","combined"].includes(saved)) switchTab(saved);
+  } catch (_) {}
+
+  // Initial render: hydrate from cache if available, else show empty
+  hydrateFromCache();
+  render();
+  renderMfs();
+</script>
+</body>
+</html>
