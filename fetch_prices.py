@@ -102,7 +102,7 @@ PORTFOLIO = [
     {"name": "SINCLAIRS HOTELS LTD",               "icici": "SINHOT", "nse": "SINCLAIR"},
     {"name": "SPEL SEMICONDUCTOR LIMITED",         "icici": "SPESEM", "nse": "SPELS"},
     {"name": "STATE BANK OF INDIA",                "icici": "STABAN", "nse": "SBIN"},
-    {"name": "TANEJA AEROSPACE & AVIATION LTD",    "icici": "TANAER", "nse": "TANEJAERO"},
+    {"name": "TANEJA AEROSPACE & AVIATION LTD",    "icici": "TANAER", "nse": "TANAA"},
     {"name": "TATA POWER CO LTD",                  "icici": "TATPOW", "nse": "TATAPOWER"},
     {"name": "TATA STEEL LIMITED",                 "icici": "TATSTE", "nse": "TATASTEEL"},
     {"name": "TATA CONSULTANCY SERVICES LTD",      "icici": "TCS",    "nse": "TCS"},
@@ -124,21 +124,41 @@ PORTFOLIO = [
 ]
 
 def fetch_price(ticker_symbol):
-    """Fetch price and prev close for a Yahoo Finance ticker symbol."""
+    """Fetch price and prev close for a Yahoo Finance ticker symbol.
+    Tries fast_info first (liquid stocks). Falls back to history(period='5d')
+    for illiquid/low-volume stocks where fast_info.last_price returns None.
+    """
+    exch = "NSE" if ticker_symbol.endswith(".NS") else "BSE"
     try:
         t = yf.Ticker(ticker_symbol)
         info = t.fast_info
         price = info.last_price
         prev_close = info.previous_close
         if price and float(price) > 0:
-            exch = "NSE" if ticker_symbol.endswith(".NS") else "BSE"
             return {
                 "price": round(float(price), 2),
                 "prevClose": round(float(prev_close), 2) if prev_close else round(float(price), 2),
                 "exchange": exch,
             }
-    except Exception as e:
+    except Exception:
         pass
+
+    # Fallback: use recent OHLC history for illiquid / thinly-traded stocks
+    try:
+        t = yf.Ticker(ticker_symbol)
+        hist = t.history(period="5d")
+        if not hist.empty:
+            price = float(hist["Close"].iloc[-1])
+            prev_close = float(hist["Close"].iloc[-2]) if len(hist) >= 2 else price
+            if price > 0:
+                return {
+                    "price": round(price, 2),
+                    "prevClose": round(prev_close, 2),
+                    "exchange": exch,
+                }
+    except Exception:
+        pass
+
     return None
 
 def main():
