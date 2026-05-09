@@ -193,6 +193,50 @@
   .tab-panel { display: none; }
   .tab-panel.active { display: block; }
 
+  /* ==== Mobile Responsive ==== */
+  @media (max-width: 600px) {
+    .wrap { padding: 14px 12px 48px; }
+
+    /* Header */
+    header.top { flex-direction: column; align-items: flex-start; gap: 8px; margin-bottom: 12px; }
+    .brand h1 { font-size: 15px; }
+    header.top > div:last-child { align-self: flex-start; }
+
+    /* KPI cards: 2 columns */
+    .kpis { grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 10px; }
+    .kpi { padding: 12px 12px; }
+    .kpi .value { font-size: 17px; }
+
+    /* Controls */
+    .controls { flex-direction: column; gap: 8px; padding: 12px; }
+    .controls input[type="text"] { min-width: 0; width: 100%; }
+    .btn { width: 100%; justify-content: center; text-align: center; }
+
+    /* Table: allow horizontal scroll, hide less critical columns */
+    .table-wrap { border-radius: 10px; max-height: 60vh; }
+    table { font-size: 12px; min-width: 480px; }
+    thead th, tbody td { padding: 8px 8px; }
+    .col-icici { display: none; }   /* hide ICICI code column */
+
+    /* Tabs */
+    .tab { padding: 10px 13px; font-size: 12px; gap: 5px; }
+    .tabs { margin-bottom: 14px; }
+
+    /* Grand total */
+    .grand-total { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 14px; }
+    .grand-total .item .value { font-size: 17px; }
+    .grand-total .item.combined .value { font-size: 20px; }
+
+    /* History KPIs */
+    .hist-kpis { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+
+    /* Chart */
+    .chart-wrap { padding: 16px 12px; }
+
+    /* MF table */
+    #mftable { font-size: 12px; min-width: 520px; }
+  }
+
   /* ==== History Chart ==== */
   .chart-wrap {
     background: var(--panel); border: 1px solid var(--border);
@@ -278,7 +322,7 @@
     <table id="ptable">
       <thead>
         <tr>
-          <th data-sort="icici" style="width:90px;">ICICI <span class="arrow">↕</span></th>
+          <th data-sort="icici" style="width:90px;" class="col-icici">ICICI <span class="arrow">↕</span></th>
           <th data-sort="nse" style="width:120px;">NSE/BSE <span class="arrow">↕</span></th>
           <th data-sort="name">Stock Name <span class="arrow">↕</span></th>
           <th data-sort="price" class="num">Price (₹) <span class="arrow">↕</span></th>
@@ -761,7 +805,7 @@
         : `<span class="ticker">${r.nse}${exTag}</span>`;
       const tr = document.createElement("tr");
       tr.innerHTML = `
-        <td><span class="sym" style="background:rgba(138,147,168,0.12);color:var(--muted);">${r.icici}</span></td>
+        <td class="col-icici"><span class="sym" style="background:rgba(138,147,168,0.12);color:var(--muted);">${r.icici}</span></td>
         <td><span class="${symClass}">${r.nse}</span>${cacheTag}</td>
         <td><div class="name">${r.name}${asOf}</div></td>
         <td class="num">${r.status === "ok" ? num(r.price) : (r.status === "fail" ? "<span style='color:var(--red)'>fail</span>" : "—")}</td>
