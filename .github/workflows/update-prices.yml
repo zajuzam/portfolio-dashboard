@@ -1,5 +1,5 @@
 name: Update Stock Prices
- 
+
 on:
   schedule:
     # Runs at 11:15 UTC (4:45 PM IST) on weekdays — 15 min after NSE closes
@@ -34,9 +34,7 @@ jobs:
         run: |
           git config user.name  "GitHub Actions"
           git config user.email "actions@github.com"
-          # Pull latest first (with autostash so prices.json isn't blocked)
           git pull --rebase --autostash origin main
-         git pull --rebase --autostash origin main
-         git add prices.json
-         git diff --staged --quiet || git commit -m "Update prices $(date -u '+%Y-%m-%d %H:%M UTC')"
-         git push
+          git add prices.json
+          git diff --staged --quiet || git commit -m "Update prices $(date -u '+%Y-%m-%d %H:%M UTC')"
+          git push
