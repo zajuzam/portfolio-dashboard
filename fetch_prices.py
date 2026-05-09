@@ -242,6 +242,9 @@ def insert_snapshot(stocks_value, mf_value, stocks_count):
     today = date.today()
 
     try:
+        # Supabase requires SSL — append sslmode if not already present
+        if "sslmode" not in db_url:
+            db_url += ("&" if "?" in db_url else "?") + "sslmode=require"
         conn = psycopg2.connect(db_url)
         cur  = conn.cursor()
 
