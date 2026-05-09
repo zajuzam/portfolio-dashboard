@@ -152,8 +152,8 @@ MUTUAL_FUNDS = [
     },
     {
         "name":       "ICICI Prudential Smallcap Fund - Growth",
-        "schemeCode": "120828",
-        "units":      3193.72,  # 270582.88 / 84.73
+        "schemeCode": "106823",
+        "units":      3193.72,
         "fallbackNav": 84.73,
     },
 ]
