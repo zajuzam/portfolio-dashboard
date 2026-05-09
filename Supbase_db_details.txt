@@ -1,0 +1,6 @@
+https://supabase.com/
+
+zajuzam_stcokexchange/123PAthanamthitta@!
+
+Supbase.com DB URL
+postgresql://postgres:123PAthanamthitta@!@db.xsjupwaatiyxvzjplyfx.supabase.co:5432/postgres
