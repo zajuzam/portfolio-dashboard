@@ -10,6 +10,7 @@ import time
 import urllib.request
 import psycopg2
 from datetime import datetime, timezone, date
+from urllib.parse import urlparse, unquote
 import yfinance as yf
 
 # ---------------------------------------------------------------------------
@@ -242,10 +243,16 @@ def insert_snapshot(stocks_value, mf_value, stocks_count):
     today = date.today()
 
     try:
-        # Supabase requires SSL — append sslmode if not already present
-        if "sslmode" not in db_url:
-            db_url += ("&" if "?" in db_url else "?") + "sslmode=require"
-        conn = psycopg2.connect(db_url)
+        # Parse URL manually so special characters in the password don't break it
+        parsed = urlparse(db_url)
+        conn = psycopg2.connect(
+            host=parsed.hostname,
+            port=parsed.port or 5432,
+            dbname=parsed.path.lstrip("/"),
+            user=parsed.username,
+            password=unquote(parsed.password),
+            sslmode="require",
+        )
         cur  = conn.cursor()
 
         # Create table on first run
