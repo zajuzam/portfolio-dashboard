@@ -6,6 +6,10 @@ on:
     - cron: '15 11 * * 1-5'
   workflow_dispatch:   # Allows manual trigger from GitHub Actions tab
 
+concurrency:
+  group: update-prices
+  cancel-in-progress: true   # If two runs start, cancel the older one
+
 jobs:
   update-prices:
     runs-on: ubuntu-latest
@@ -34,7 +38,14 @@ jobs:
         run: |
           git config user.name  "GitHub Actions"
           git config user.email "actions@github.com"
-          git pull --rebase --autostash origin main
+          # Save the fresh prices.json our script just wrote
+          cp prices.json /tmp/fresh_prices.json
+          # Reset to the absolute latest remote state (avoids any diverge)
+          git fetch origin main
+          git reset --hard origin/main
+          # Restore our fresh prices.json on top
+          cp /tmp/fresh_prices.json prices.json
           git add prices.json
+          # Only commit if prices.json actually changed
           git diff --staged --quiet || git commit -m "Update prices $(date -u '+%Y-%m-%d %H:%M UTC')"
-          git push
+          git push origin HEAD:main
