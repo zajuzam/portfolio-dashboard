@@ -192,7 +192,23 @@
   .tab.active .count { background: rgba(79,140,255,0.2); color: var(--accent-2); }
   .tab-panel { display: none; }
   .tab-panel.active { display: block; }
+
+  /* ==== History Chart ==== */
+  .chart-wrap {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 14px; padding: 28px 24px; box-shadow: var(--shadow);
+  }
+  .chart-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 20px; flex-wrap: wrap; gap: 10px;
+  }
+  .chart-header h2 { margin: 0; font-size: 15px; font-weight: 700; }
+  .chart-header .sub { color: var(--muted); font-size: 12px; margin-top: 3px; }
+  .chart-msg { text-align: center; padding: 60px 20px; color: var(--muted); font-size: 14px; }
+  .hist-kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 20px; }
+  @media (max-width: 700px) { .hist-kpis { grid-template-columns: 1fr 1fr; } }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 </head>
 <body>
 <div class="wrap">
@@ -219,6 +235,7 @@
     <div class="tab active" data-tab="stocks">📈 Stocks <span class="count">113</span></div>
     <div class="tab" data-tab="mfs">📊 Mutual Funds <span class="count">3</span></div>
     <div class="tab" data-tab="combined">💼 Combined</div>
+    <div class="tab" data-tab="history">📉 History</div>
   </nav>
 
   <!-- ============== STOCKS TAB ============== -->
@@ -382,6 +399,46 @@
   </div>
 
   </div><!-- /tab-panel combined -->
+
+  <!-- ============== HISTORY TAB ============== -->
+  <div class="tab-panel" data-tab="history">
+
+  <div style="margin: 8px 4px 18px; color: var(--muted); font-size: 13px;">
+    Combined portfolio value recorded daily after market close by GitHub Actions → Supabase.
+    Data grows one row per trading day automatically.
+  </div>
+
+  <section class="hist-kpis">
+    <div class="kpi">
+      <div class="label">Latest Value</div>
+      <div class="value" id="histLatest">—</div>
+      <div class="delta" id="histLatestDate">&nbsp;</div>
+    </div>
+    <div class="kpi">
+      <div class="label">All-Time High</div>
+      <div class="value" id="histHigh">—</div>
+      <div class="delta" id="histHighDate">&nbsp;</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Change (first → latest)</div>
+      <div class="value" id="histChange">—</div>
+      <div class="delta" id="histChangePct">&nbsp;</div>
+    </div>
+  </section>
+
+  <div class="chart-wrap">
+    <div class="chart-header">
+      <div>
+        <h2>Portfolio Value Over Time</h2>
+        <div class="sub" id="histSub">Loading from Supabase…</div>
+      </div>
+      <button class="btn secondary" id="histRefreshBtn" type="button">⟳ Refresh</button>
+    </div>
+    <div id="histMsg" class="chart-msg">Loading history data…</div>
+    <canvas id="historyChart" style="display:none;"></canvas>
+  </div>
+
+  </div><!-- /tab-panel history -->
 
 </div>
 
@@ -1018,10 +1075,129 @@
     btn.disabled = false; btn.textContent = "⟳ Fetch Latest NAVs";
   }
 
+  // ---- History Chart (Supabase REST API) ----
+  const SUPABASE_URL  = 'https://xsjupwaatiyxvzjplyfx.supabase.co';
+  const SUPABASE_KEY  = 'sb_publishable_fK6HZIqjnS7ucRcRWd3eKg_z06LcZi1';
+
+  let histChart = null;
+  let histLoaded = false;
+
+  async function loadHistory() {
+    const msg     = document.getElementById('histMsg');
+    const canvas  = document.getElementById('historyChart');
+    const sub     = document.getElementById('histSub');
+    const btn     = document.getElementById('histRefreshBtn');
+    btn.disabled  = true;
+    msg.style.display  = 'block';
+    canvas.style.display = 'none';
+    msg.textContent = 'Loading history data…';
+    sub.textContent = 'Fetching from Supabase…';
+
+    try {
+      const resp = await fetch(
+        `${SUPABASE_URL}/rest/v1/portfolio_snapshot?select=snapshot_date,total_value&order=snapshot_date.asc`,
+        { headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY } }
+      );
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      const data = await resp.json();
+
+      if (!Array.isArray(data) || data.length === 0) {
+        msg.textContent = 'No history yet — data will appear after the first successful GitHub Actions run.';
+        sub.textContent = '0 data points';
+        btn.disabled = false;
+        return;
+      }
+
+      const labels = data.map(d => d.snapshot_date);
+      const values = data.map(d => parseFloat(d.total_value));
+
+      // KPI cards
+      const latest  = values[values.length - 1];
+      const first   = values[0];
+      const high    = Math.max(...values);
+      const highIdx = values.indexOf(high);
+      const change  = latest - first;
+      const changePct = first ? (change / first) * 100 : 0;
+
+      document.getElementById('histLatest').textContent   = inr0(latest);
+      document.getElementById('histLatestDate').textContent = labels[labels.length - 1];
+      document.getElementById('histHigh').textContent    = inr0(high);
+      document.getElementById('histHighDate').textContent = labels[highIdx];
+      const chEl = document.getElementById('histChange');
+      chEl.textContent = (change >= 0 ? '+' : '−') + inr0(Math.abs(change));
+      chEl.className = 'value ' + cls(change);
+      const cpEl = document.getElementById('histChangePct');
+      cpEl.textContent = pct(changePct);
+      cpEl.className = 'delta ' + cls(change);
+
+      sub.textContent = `${data.length} trading day${data.length > 1 ? 's' : ''} · ${labels[0]} → ${labels[labels.length-1]}`;
+      msg.style.display = 'none';
+      canvas.style.display = 'block';
+
+      if (histChart) histChart.destroy();
+
+      const ctx = canvas.getContext('2d');
+      histChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [{
+            label: 'Portfolio Value',
+            data: values,
+            borderColor: '#4f8cff',
+            backgroundColor: 'rgba(79,140,255,0.07)',
+            borderWidth: 2.5,
+            pointRadius: data.length <= 30 ? 5 : 3,
+            pointBackgroundColor: '#4f8cff',
+            pointHoverRadius: 7,
+            fill: true,
+            tension: 0.3,
+          }]
+        },
+        options: {
+          responsive: true,
+          interaction: { mode: 'index', intersect: false },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: '#1d2438',
+              borderColor: '#2a3350',
+              borderWidth: 1,
+              titleColor: '#8a93a8',
+              bodyColor: '#e6e9f2',
+              callbacks: {
+                label: ctx => '  ₹' + ctx.parsed.y.toLocaleString('en-IN', { maximumFractionDigits: 0 })
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: { color: 'rgba(255,255,255,0.04)' },
+              ticks: { color: '#8a93a8', maxTicksLimit: 10, maxRotation: 30 }
+            },
+            y: {
+              grid: { color: 'rgba(255,255,255,0.04)' },
+              ticks: {
+                color: '#8a93a8',
+                callback: v => '₹' + (v / 100000).toFixed(1) + 'L'
+              }
+            }
+          }
+        }
+      });
+      histLoaded = true;
+    } catch(e) {
+      msg.textContent = 'Could not load history: ' + e.message;
+      sub.textContent = 'Error';
+    }
+    btn.disabled = false;
+  }
+
   // ---- Wire up ----
   document.getElementById("refreshBtn").addEventListener("click", fetchLive);
   document.getElementById("mfRefreshBtn").addEventListener("click", fetchMfNavs);
   document.getElementById("exportBtn").addEventListener("click", exportCsv);
+  document.getElementById("histRefreshBtn").addEventListener("click", loadHistory);
   document.getElementById("searchInput").addEventListener("input", e => {
     searchQuery = e.target.value;
     render();
@@ -1044,12 +1220,18 @@
     try { localStorage.setItem("activeTab_v1", tab); } catch (_) {}
   }
   document.querySelectorAll(".tab").forEach(t =>
-    t.addEventListener("click", () => switchTab(t.dataset.tab)));
+    t.addEventListener("click", () => {
+      switchTab(t.dataset.tab);
+      if (t.dataset.tab === "history" && !histLoaded) loadHistory();
+    }));
 
   // Restore last-active tab
   try {
     const saved = localStorage.getItem("activeTab_v1");
-    if (saved && ["stocks","mfs","combined"].includes(saved)) switchTab(saved);
+    if (saved && ["stocks","mfs","combined","history"].includes(saved)) {
+      switchTab(saved);
+      if (saved === "history") loadHistory();
+    }
   } catch (_) {}
 
   // Initial render: hydrate from cache if available, else show empty
