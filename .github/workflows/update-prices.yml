@@ -2,8 +2,8 @@ name: Update Stock Prices
 
 on:
   schedule:
-    # Runs at 11:15 UTC (4:45 PM IST) on weekdays — 15 min after NSE closes
-    - cron: '15 11 * * 1-5'
+    # Runs at 12:00 UTC (7:00 AM EST / 8:00 AM EDT) on weekdays
+    - cron: '0 12 * * 1-5'
   workflow_dispatch:   # Allows manual trigger from GitHub Actions tab
 
 concurrency:
