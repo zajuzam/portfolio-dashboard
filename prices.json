@@ -1,894 +1,894 @@
 {
   "snap": {
     "AAATEC": {
-      "price": 97.6,
-      "prevClose": 96.68,
+      "price": 98.33,
+      "prevClose": 97.6,
       "exchange": "NSE",
-      "lastTradeTime": 1781702316,
+      "lastTradeTime": 1781788338,
       "marketState": "CLOSED",
-      "savedAt": 1781702316814
+      "savedAt": 1781788338173
     },
     "ADDPRO": {
-      "price": 7.29,
-      "prevClose": 7.13,
+      "price": 7.1,
+      "prevClose": 7.29,
       "exchange": "BSE",
-      "lastTradeTime": 1781702318,
+      "lastTradeTime": 1781788340,
       "marketState": "CLOSED",
-      "savedAt": 1781702318580
+      "savedAt": 1781788340624
     },
     "AFL": {
-      "price": 111.73,
-      "prevClose": 112.92,
+      "price": 112.29,
+      "prevClose": 111.73,
       "exchange": "NSE",
-      "lastTradeTime": 1781702318,
+      "lastTradeTime": 1781788341,
       "marketState": "CLOSED",
-      "savedAt": 1781702318872
+      "savedAt": 1781788341103
     },
     "AGSTRA": {
       "price": 2.83,
       "prevClose": 2.83,
       "exchange": "NSE",
-      "lastTradeTime": 1781702319,
+      "lastTradeTime": 1781788341,
       "marketState": "CLOSED",
-      "savedAt": 1781702319256
+      "savedAt": 1781788341724
     },
     "AJASOY": {
-      "price": 21.32,
-      "prevClose": 21.33,
+      "price": 21.22,
+      "prevClose": 21.32,
       "exchange": "BSE",
-      "lastTradeTime": 1781702320,
+      "lastTradeTime": 1781788343,
       "marketState": "CLOSED",
-      "savedAt": 1781702320418
+      "savedAt": 1781788343532
     },
     "AMBCE": {
-      "price": 426.45,
-      "prevClose": 426.05,
+      "price": 430.0,
+      "prevClose": 426.35,
       "exchange": "NSE",
-      "lastTradeTime": 1781702320,
+      "lastTradeTime": 1781788344,
       "marketState": "CLOSED",
-      "savedAt": 1781702320673
+      "savedAt": 1781788344009
     },
     "ANUPHA": {
-      "price": 79.79,
-      "prevClose": 80.87,
+      "price": 78.9,
+      "prevClose": 79.79,
       "exchange": "NSE",
-      "lastTradeTime": 1781702320,
+      "lastTradeTime": 1781788344,
       "marketState": "CLOSED",
-      "savedAt": 1781702320819
+      "savedAt": 1781788344708
     },
     "ASIEAS": {
-      "price": 151.89,
-      "prevClose": 152.66,
+      "price": 150.23,
+      "prevClose": 151.89,
       "exchange": "NSE",
-      "lastTradeTime": 1781702321,
+      "lastTradeTime": 1781788345,
       "marketState": "CLOSED",
-      "savedAt": 1781702321081
+      "savedAt": 1781788345380
     },
     "ASSSTO": {
-      "price": 25.06,
-      "prevClose": 24.91,
+      "price": 25.17,
+      "prevClose": 25.06,
       "exchange": "BSE",
-      "lastTradeTime": 1781702322,
+      "lastTradeTime": 1781788346,
       "marketState": "CLOSED",
-      "savedAt": 1781702322245
+      "savedAt": 1781788346991
     },
     "AVAFEE": {
-      "price": 983.6,
-      "prevClose": 1000.9,
+      "price": 980.9,
+      "prevClose": 989.8,
       "exchange": "NSE",
-      "lastTradeTime": 1781702322,
+      "lastTradeTime": 1781788347,
       "marketState": "CLOSED",
-      "savedAt": 1781702322511
+      "savedAt": 1781788347628
     },
     "AXIBAN": {
-      "price": 1350.9,
-      "prevClose": 1363.4,
+      "price": 1360.1,
+      "prevClose": 1351.5,
       "exchange": "NSE",
-      "lastTradeTime": 1781702323,
+      "lastTradeTime": 1781788349,
       "marketState": "CLOSED",
-      "savedAt": 1781702323781
+      "savedAt": 1781788349101
     },
     "BANBAR": {
-      "price": 281.85,
-      "prevClose": 275.35,
+      "price": 283.0,
+      "prevClose": 282.0,
       "exchange": "NSE",
-      "lastTradeTime": 1781702324,
+      "lastTradeTime": 1781788349,
       "marketState": "CLOSED",
-      "savedAt": 1781702324014
+      "savedAt": 1781788349548
     },
     "BANFIN": {
-      "price": 7.0,
-      "prevClose": 6.91,
+      "price": 6.95,
+      "prevClose": 7.0,
       "exchange": "BSE",
-      "lastTradeTime": 1781702325,
+      "lastTradeTime": 1781788351,
       "marketState": "CLOSED",
-      "savedAt": 1781702325005
+      "savedAt": 1781788351201
     },
     "BERSEC": {
-      "price": 29.05,
-      "prevClose": 30.57,
+      "price": 27.6,
+      "prevClose": 29.05,
       "exchange": "BSE",
-      "lastTradeTime": 1781702325,
+      "lastTradeTime": 1781788352,
       "marketState": "CLOSED",
-      "savedAt": 1781702325871
+      "savedAt": 1781788352807
     },
     "BHAELE": {
-      "price": 419.85,
-      "prevClose": 408.0,
+      "price": 428.6,
+      "prevClose": 422.2,
       "exchange": "NSE",
-      "lastTradeTime": 1781702326,
+      "lastTradeTime": 1781788353,
       "marketState": "CLOSED",
-      "savedAt": 1781702326128
+      "savedAt": 1781788353277
     },
     "BHEL": {
-      "price": 392.25,
-      "prevClose": 384.2,
+      "price": 405.9,
+      "prevClose": 392.15,
       "exchange": "NSE",
-      "lastTradeTime": 1781702326,
+      "lastTradeTime": 1781788353,
       "marketState": "CLOSED",
-      "savedAt": 1781702326530
+      "savedAt": 1781788353747
     },
     "BODCHE": {
-      "price": 64.09,
-      "prevClose": 65.38,
+      "price": 67.29,
+      "prevClose": 64.09,
       "exchange": "NSE",
-      "lastTradeTime": 1781702326,
+      "lastTradeTime": 1781788354,
       "marketState": "CLOSED",
-      "savedAt": 1781702326818
+      "savedAt": 1781788354060
     },
     "CALSOF": {
-      "price": 23.07,
-      "prevClose": 21.98,
+      "price": 24.22,
+      "prevClose": 23.07,
       "exchange": "NSE",
-      "lastTradeTime": 1781702327,
+      "lastTradeTime": 1781788354,
       "marketState": "CLOSED",
-      "savedAt": 1781702327119
+      "savedAt": 1781788354406
     },
     "CNKFIN": {
       "price": 0.35,
       "prevClose": 0.35,
       "exchange": "NSE",
-      "lastTradeTime": 1781702327,
+      "lastTradeTime": 1781788355,
       "marketState": "CLOSED",
-      "savedAt": 1781702327347
+      "savedAt": 1781788355104
     },
     "CPSETF": {
-      "price": 98.39,
-      "prevClose": 97.46,
+      "price": 99.36,
+      "prevClose": 98.6,
       "exchange": "NSE",
-      "lastTradeTime": 1781702330,
+      "lastTradeTime": 1781788359,
       "marketState": "CLOSED",
-      "savedAt": 1781702330886
+      "savedAt": 1781788359726
     },
     "DAVSUG": {
-      "price": 3.64,
+      "price": 3.63,
       "prevClose": 3.66,
       "exchange": "NSE",
-      "lastTradeTime": 1781702331,
+      "lastTradeTime": 1781788360,
       "marketState": "CLOSED",
-      "savedAt": 1781702331092
+      "savedAt": 1781788360134
     },
     "DELLIM": {
-      "price": 451.55,
-      "prevClose": 450.45,
+      "price": 459.2,
+      "prevClose": 452.7,
       "exchange": "NSE",
-      "lastTradeTime": 1781702331,
+      "lastTradeTime": 1781788360,
       "marketState": "CLOSED",
-      "savedAt": 1781702331464
+      "savedAt": 1781788360470
     },
     "DEVIN": {
-      "price": 113.28,
-      "prevClose": 113.45,
+      "price": 115.28,
+      "prevClose": 113.33,
       "exchange": "NSE",
-      "lastTradeTime": 1781702331,
+      "lastTradeTime": 1781788360,
       "marketState": "CLOSED",
-      "savedAt": 1781702331761
+      "savedAt": 1781788360813
     },
     "DIVLAB": {
-      "price": 6663.5,
-      "prevClose": 6712.5,
+      "price": 6767.0,
+      "prevClose": 6659.5,
       "exchange": "NSE",
-      "lastTradeTime": 1781702332,
+      "lastTradeTime": 1781788361,
       "marketState": "CLOSED",
-      "savedAt": 1781702332004
+      "savedAt": 1781788361204
     },
     "DOLINV": {
-      "price": 77.03,
-      "prevClose": 76.95,
+      "price": 76.44,
+      "prevClose": 77.03,
       "exchange": "NSE",
-      "lastTradeTime": 1781702332,
+      "lastTradeTime": 1781788361,
       "marketState": "CLOSED",
-      "savedAt": 1781702332315
+      "savedAt": 1781788361602
     },
     "DPSLIM": {
-      "price": 7.66,
-      "prevClose": 7.68,
+      "price": 7.6,
+      "prevClose": 7.66,
       "exchange": "NSE",
-      "lastTradeTime": 1781702332,
+      "lastTradeTime": 1781788361,
       "marketState": "CLOSED",
-      "savedAt": 1781702332605
+      "savedAt": 1781788361989
     },
     "EASTRI": {
-      "price": 8.29,
-      "prevClose": 8.32,
+      "price": 7.99,
+      "prevClose": 8.3,
       "exchange": "NSE",
-      "lastTradeTime": 1781702332,
+      "lastTradeTime": 1781788362,
       "marketState": "CLOSED",
-      "savedAt": 1781702332769
+      "savedAt": 1781788362395
     },
     "EIHLIM": {
-      "price": 314.9,
-      "prevClose": 306.15,
+      "price": 316.5,
+      "prevClose": 314.9,
       "exchange": "NSE",
-      "lastTradeTime": 1781702332,
+      "lastTradeTime": 1781788362,
       "marketState": "CLOSED",
-      "savedAt": 1781702332984
+      "savedAt": 1781788362906
     },
     "ELECAS": {
-      "price": 79.01,
-      "prevClose": 77.28,
+      "price": 80.94,
+      "prevClose": 78.98,
       "exchange": "NSE",
-      "lastTradeTime": 1781702333,
+      "lastTradeTime": 1781788363,
       "marketState": "CLOSED",
-      "savedAt": 1781702333330
+      "savedAt": 1781788363353
     },
     "EXIIND": {
-      "price": 388.4,
-      "prevClose": 388.0,
+      "price": 384.85,
+      "prevClose": 389.0,
       "exchange": "NSE",
-      "lastTradeTime": 1781702334,
+      "lastTradeTime": 1781788364,
       "marketState": "CLOSED",
-      "savedAt": 1781702334611
+      "savedAt": 1781788364805
     },
     "FCSSOF": {
-      "price": 1.56,
-      "prevClose": 1.59,
+      "price": 1.53,
+      "prevClose": 1.56,
       "exchange": "NSE",
-      "lastTradeTime": 1781702334,
+      "lastTradeTime": 1781788365,
       "marketState": "CLOSED",
-      "savedAt": 1781702334821
+      "savedAt": 1781788365217
     },
     "FILFAS": {
       "price": 0.21,
-      "prevClose": 0.21,
+      "prevClose": 0.22,
       "exchange": "NSE",
-      "lastTradeTime": 1781702335,
+      "lastTradeTime": 1781788365,
       "marketState": "CLOSED",
-      "savedAt": 1781702335181
+      "savedAt": 1781788365630
     },
     "FIRSOU": {
-      "price": 243.85,
-      "prevClose": 242.85,
+      "price": 240.0,
+      "prevClose": 244.35,
       "exchange": "NSE",
-      "lastTradeTime": 1781702335,
+      "lastTradeTime": 1781788366,
       "marketState": "CLOSED",
-      "savedAt": 1781702335509
+      "savedAt": 1781788366035
     },
     "FUTRE": {
       "price": 2.28,
       "prevClose": 2.28,
       "exchange": "NSE",
-      "lastTradeTime": 1781702336,
+      "lastTradeTime": 1781788366,
       "marketState": "CLOSED",
-      "savedAt": 1781702336017
+      "savedAt": 1781788366650
     },
     "GENLAB": {
-      "price": 10.44,
-      "prevClose": 10.71,
+      "price": 10.64,
+      "prevClose": 10.44,
       "exchange": "BSE",
-      "lastTradeTime": 1781702337,
+      "lastTradeTime": 1781788368,
       "marketState": "CLOSED",
-      "savedAt": 1781702337443
+      "savedAt": 1781788368240
     },
     "GMRINF": {
-      "price": 109.32,
-      "prevClose": 107.48,
+      "price": 110.55,
+      "prevClose": 109.05,
       "exchange": "NSE",
-      "lastTradeTime": 1781702337,
+      "lastTradeTime": 1781788368,
       "marketState": "CLOSED",
-      "savedAt": 1781702337598
+      "savedAt": 1781788368625
     },
     "GMRPOW": {
-      "price": 105.06,
-      "prevClose": 105.8,
+      "price": 101.77,
+      "prevClose": 104.9,
       "exchange": "NSE",
-      "lastTradeTime": 1781702337,
+      "lastTradeTime": 1781788369,
       "marketState": "CLOSED",
-      "savedAt": 1781702337830
+      "savedAt": 1781788369052
     },
     "HCLINF": {
-      "price": 12.39,
-      "prevClose": 12.58,
+      "price": 12.54,
+      "prevClose": 12.39,
       "exchange": "NSE",
-      "lastTradeTime": 1781702338,
+      "lastTradeTime": 1781788369,
       "marketState": "CLOSED",
-      "savedAt": 1781702338048
+      "savedAt": 1781788369465
     },
     "HDFBAN": {
-      "price": 787.1,
-      "prevClose": 784.8,
+      "price": 799.0,
+      "prevClose": 786.0,
       "exchange": "NSE",
-      "lastTradeTime": 1781702338,
+      "lastTradeTime": 1781788369,
       "marketState": "CLOSED",
-      "savedAt": 1781702338434
+      "savedAt": 1781788369914
     },
     "HINCON": {
-      "price": 26.86,
-      "prevClose": 25.59,
+      "price": 27.35,
+      "prevClose": 26.93,
       "exchange": "NSE",
-      "lastTradeTime": 1781702339,
+      "lastTradeTime": 1781788371,
       "marketState": "CLOSED",
-      "savedAt": 1781702339793
+      "savedAt": 1781788371384
     },
     "HINZIN": {
-      "price": 572.55,
-      "prevClose": 564.3,
+      "price": 571.45,
+      "prevClose": 572.0,
       "exchange": "NSE",
-      "lastTradeTime": 1781702340,
+      "lastTradeTime": 1781788372,
       "marketState": "CLOSED",
-      "savedAt": 1781702340439
+      "savedAt": 1781788372038
     },
     "ICIBAN": {
-      "price": 1336.8,
-      "prevClose": 1335.5,
+      "price": 1342.3,
+      "prevClose": 1337.0,
       "exchange": "NSE",
-      "lastTradeTime": 1781702340,
+      "lastTradeTime": 1781788372,
       "marketState": "CLOSED",
-      "savedAt": 1781702340749
+      "savedAt": 1781788372460
     },
     "ICIGOL": {
-      "price": 128.2,
-      "prevClose": 128.6,
+      "price": 126.39,
+      "prevClose": 128.17,
       "exchange": "NSE",
-      "lastTradeTime": 1781702340,
+      "lastTradeTime": 1781788372,
       "marketState": "CLOSED",
-      "savedAt": 1781702340921
+      "savedAt": 1781788372835
     },
     "IGAMOT": {
-      "price": 410.45,
-      "prevClose": 380.35,
+      "price": 394.5,
+      "prevClose": 410.45,
       "exchange": "NSE",
-      "lastTradeTime": 1781702341,
+      "lastTradeTime": 1781788373,
       "marketState": "CLOSED",
-      "savedAt": 1781702341349
+      "savedAt": 1781788373333
     },
     "INDCEM": {
-      "price": 385.95,
-      "prevClose": 392.55,
+      "price": 383.7,
+      "prevClose": 385.5,
       "exchange": "NSE",
-      "lastTradeTime": 1781702341,
+      "lastTradeTime": 1781788373,
       "marketState": "CLOSED",
-      "savedAt": 1781702341554
+      "savedAt": 1781788373740
     },
     "INDR": {
-      "price": 100.44,
-      "prevClose": 97.72,
+      "price": 100.13,
+      "prevClose": 100.45,
       "exchange": "NSE",
-      "lastTradeTime": 1781702341,
+      "lastTradeTime": 1781788374,
       "marketState": "CLOSED",
-      "savedAt": 1781702341894
+      "savedAt": 1781788374150
     },
     "INFINC": {
-      "price": 14.28,
-      "prevClose": 14.36,
+      "price": 15.01,
+      "prevClose": 14.33,
       "exchange": "NSE",
-      "lastTradeTime": 1781702342,
+      "lastTradeTime": 1781788374,
       "marketState": "CLOSED",
-      "savedAt": 1781702342113
+      "savedAt": 1781788374520
     },
     "JAIASS": {
       "price": 2.42,
       "prevClose": 2.42,
       "exchange": "NSE",
-      "lastTradeTime": 1781702342,
+      "lastTradeTime": 1781788375,
       "marketState": "CLOSED",
-      "savedAt": 1781702342881
+      "savedAt": 1781788375130
     },
     "JAIIRR": {
-      "price": 32.65,
-      "prevClose": 32.75,
+      "price": 33.17,
+      "prevClose": 32.65,
       "exchange": "NSE",
-      "lastTradeTime": 1781702343,
+      "lastTradeTime": 1781788375,
       "marketState": "CLOSED",
-      "savedAt": 1781702343112
+      "savedAt": 1781788375557
     },
     "JAYNE": {
-      "price": 91.8,
-      "prevClose": 90.9,
+      "price": 90.31,
+      "prevClose": 92.07,
       "exchange": "NSE",
-      "lastTradeTime": 1781702344,
+      "lastTradeTime": 1781788376,
       "marketState": "CLOSED",
-      "savedAt": 1781702344254
+      "savedAt": 1781788376934
     },
     "JIOFIN": {
-      "price": 242.98,
-      "prevClose": 241.66,
+      "price": 244.1,
+      "prevClose": 242.84,
       "exchange": "NSE",
-      "lastTradeTime": 1781702344,
+      "lastTradeTime": 1781788377,
       "marketState": "CLOSED",
-      "savedAt": 1781702344522
+      "savedAt": 1781788377445
     },
     "JKTYRE": {
-      "price": 394.15,
-      "prevClose": 387.1,
+      "price": 397.25,
+      "prevClose": 395.0,
       "exchange": "NSE",
-      "lastTradeTime": 1781702344,
+      "lastTradeTime": 1781788378,
       "marketState": "CLOSED",
-      "savedAt": 1781702344873
+      "savedAt": 1781788378001
     },
     "JUNHOT": {
-      "price": 198.76,
-      "prevClose": 197.25,
+      "price": 196.26,
+      "prevClose": 198.76,
       "exchange": "NSE",
-      "lastTradeTime": 1781702345,
+      "lastTradeTime": 1781788378,
       "marketState": "CLOSED",
-      "savedAt": 1781702345159
+      "savedAt": 1781788378561
     },
     "KANNER": {
-      "price": 211.11,
-      "prevClose": 216.0,
+      "price": 209.46,
+      "prevClose": 211.0,
       "exchange": "NSE",
-      "lastTradeTime": 1781702345,
+      "lastTradeTime": 1781788379,
       "marketState": "CLOSED",
-      "savedAt": 1781702345398
+      "savedAt": 1781788379090
     },
     "KARBAN": {
-      "price": 277.15,
-      "prevClose": 278.05,
+      "price": 277.9,
+      "prevClose": 277.15,
       "exchange": "NSE",
-      "lastTradeTime": 1781702345,
+      "lastTradeTime": 1781788379,
       "marketState": "CLOSED",
-      "savedAt": 1781702345726
+      "savedAt": 1781788379592
     },
     "KCPSUG": {
-      "price": 22.24,
-      "prevClose": 22.63,
+      "price": 22.04,
+      "prevClose": 22.24,
       "exchange": "NSE",
-      "lastTradeTime": 1781702346,
+      "lastTradeTime": 1781788380,
       "marketState": "CLOSED",
-      "savedAt": 1781702346031
+      "savedAt": 1781788380052
     },
     "KITGAR": {
-      "price": 155.04,
-      "prevClose": 155.22,
+      "price": 161.21,
+      "prevClose": 155.04,
       "exchange": "NSE",
-      "lastTradeTime": 1781702346,
+      "lastTradeTime": 1781788380,
       "marketState": "CLOSED",
-      "savedAt": 1781702346355
+      "savedAt": 1781788380460
     },
     "KMSUG": {
-      "price": 26.86,
-      "prevClose": 26.78,
+      "price": 27.2,
+      "prevClose": 26.86,
       "exchange": "NSE",
-      "lastTradeTime": 1781702346,
+      "lastTradeTime": 1781788380,
       "marketState": "CLOSED",
-      "savedAt": 1781702346599
+      "savedAt": 1781788380867
     },
     "KOTPET": {
-      "price": 124.44,
-      "prevClose": 123.9,
+      "price": 123.64,
+      "prevClose": 124.74,
       "exchange": "NSE",
-      "lastTradeTime": 1781702346,
+      "lastTradeTime": 1781788381,
       "marketState": "CLOSED",
-      "savedAt": 1781702346862
+      "savedAt": 1781788381306
     },
     "KPITEC": {
-      "price": 323.6,
-      "prevClose": 324.25,
+      "price": 325.15,
+      "prevClose": 323.5,
       "exchange": "NSE",
-      "lastTradeTime": 1781702348,
+      "lastTradeTime": 1781788382,
       "marketState": "CLOSED",
-      "savedAt": 1781702348164
+      "savedAt": 1781788382767
     },
     "LANHOL": {
-      "price": 25.09,
-      "prevClose": 25.62,
+      "price": 25.3,
+      "prevClose": 25.09,
       "exchange": "NSE",
-      "lastTradeTime": 1781702348,
+      "lastTradeTime": 1781788383,
       "marketState": "CLOSED",
-      "savedAt": 1781702348400
+      "savedAt": 1781788383149
     },
     "LARTOU": {
-      "price": 4207.7,
-      "prevClose": 4182.0,
+      "price": 4190.0,
+      "prevClose": 4205.0,
       "exchange": "NSE",
-      "lastTradeTime": 1781702348,
+      "lastTradeTime": 1781788383,
       "marketState": "CLOSED",
-      "savedAt": 1781702348680
+      "savedAt": 1781788383633
     },
     "LETRA": {
-      "price": 194.71,
-      "prevClose": 187.88,
+      "price": 188.9,
+      "prevClose": 193.35,
       "exchange": "NSE",
-      "lastTradeTime": 1781702348,
+      "lastTradeTime": 1781788384,
       "marketState": "CLOSED",
-      "savedAt": 1781702348936
+      "savedAt": 1781788384164
     },
     "LKPSEC": {
-      "price": 17.21,
-      "prevClose": 17.2,
+      "price": 17.67,
+      "prevClose": 17.21,
       "exchange": "BSE",
-      "lastTradeTime": 1781702349,
+      "lastTradeTime": 1781788385,
       "marketState": "CLOSED",
-      "savedAt": 1781702349844
+      "savedAt": 1781788385664
     },
     "MANGLO": {
-      "price": 16.43,
-      "prevClose": 16.39,
+      "price": 15.7,
+      "prevClose": 16.43,
       "exchange": "NSE",
-      "lastTradeTime": 1781702350,
+      "lastTradeTime": 1781788386,
       "marketState": "CLOSED",
-      "savedAt": 1781702350140
+      "savedAt": 1781788386064
     },
     "MAYUNI": {
-      "price": 826.75,
-      "prevClose": 823.95,
+      "price": 827.45,
+      "prevClose": 826.75,
       "exchange": "NSE",
-      "lastTradeTime": 1781702350,
+      "lastTradeTime": 1781788386,
       "marketState": "CLOSED",
-      "savedAt": 1781702350391
+      "savedAt": 1781788386461
     },
     "MININD": {
-      "price": 1088.0,
-      "prevClose": 1088.5,
+      "price": 1097.9,
+      "prevClose": 1088.2,
       "exchange": "NSE",
-      "lastTradeTime": 1781702350,
+      "lastTradeTime": 1781788386,
       "marketState": "CLOSED",
-      "savedAt": 1781702350837
+      "savedAt": 1781788386912
     },
     "MOOCAP": {
-      "price": 16.5,
-      "prevClose": 16.75,
+      "price": 16.93,
+      "prevClose": 16.5,
       "exchange": "BSE",
-      "lastTradeTime": 1781702351,
+      "lastTradeTime": 1781788388,
       "marketState": "CLOSED",
-      "savedAt": 1781702351556
+      "savedAt": 1781788388344
     },
     "NETW18": {
-      "price": 34.2,
-      "prevClose": 33.99,
+      "price": 34.54,
+      "prevClose": 34.22,
       "exchange": "NSE",
-      "lastTradeTime": 1781702351,
+      "lastTradeTime": 1781788388,
       "marketState": "CLOSED",
-      "savedAt": 1781702351861
+      "savedAt": 1781788388738
     },
     "NHPC": {
-      "price": 74.41,
-      "prevClose": 74.7,
+      "price": 75.94,
+      "prevClose": 74.44,
       "exchange": "NSE",
-      "lastTradeTime": 1781702353,
+      "lastTradeTime": 1781788390,
       "marketState": "CLOSED",
-      "savedAt": 1781702353235
+      "savedAt": 1781788390088
     },
     "NICEME": {
-      "price": 31.0,
-      "prevClose": 29.53,
+      "price": 32.55,
+      "prevClose": 31.0,
       "exchange": "NSE",
-      "lastTradeTime": 1781702353,
+      "lastTradeTime": 1781788390,
       "marketState": "CLOSED",
-      "savedAt": 1781702353455
+      "savedAt": 1781788390473
     },
     "ODYTEC": {
-      "price": 40.01,
-      "prevClose": 40.09,
+      "price": 39.99,
+      "prevClose": 40.01,
       "exchange": "BSE",
-      "lastTradeTime": 1781702354,
+      "lastTradeTime": 1781788391,
       "marketState": "CLOSED",
-      "savedAt": 1781702354652
+      "savedAt": 1781788391896
     },
     "OLAELE": {
-      "price": 42.67,
-      "prevClose": 43.07,
+      "price": 42.27,
+      "prevClose": 42.6,
       "exchange": "NSE",
-      "lastTradeTime": 1781702354,
+      "lastTradeTime": 1781788392,
       "marketState": "CLOSED",
-      "savedAt": 1781702354943
+      "savedAt": 1781788392248
     },
     "ONE97": {
-      "price": 1120.1,
-      "prevClose": 1108.5,
+      "price": 1093.9,
+      "prevClose": 1116.6,
       "exchange": "NSE",
-      "lastTradeTime": 1781702355,
+      "lastTradeTime": 1781788392,
       "marketState": "CLOSED",
-      "savedAt": 1781702355151
+      "savedAt": 1781788392656
     },
     "ORIHOT": {
-      "price": 113.12,
-      "prevClose": 119.0,
+      "price": 119.72,
+      "prevClose": 112.9,
       "exchange": "NSE",
-      "lastTradeTime": 1781702355,
+      "lastTradeTime": 1781788393,
       "marketState": "CLOSED",
-      "savedAt": 1781702355388
+      "savedAt": 1781788393091
     },
     "PANBIO": {
-      "price": 532.2,
-      "prevClose": 539.85,
+      "price": 534.85,
+      "prevClose": 532.2,
       "exchange": "NSE",
-      "lastTradeTime": 1781702355,
+      "lastTradeTime": 1781788393,
       "marketState": "CLOSED",
-      "savedAt": 1781702355646
+      "savedAt": 1781788393507
     },
     "PETLNG": {
-      "price": 292.0,
-      "prevClose": 290.55,
+      "price": 288.25,
+      "prevClose": 292.0,
       "exchange": "NSE",
-      "lastTradeTime": 1781702355,
+      "lastTradeTime": 1781788393,
       "marketState": "CLOSED",
-      "savedAt": 1781702355893
+      "savedAt": 1781788393920
     },
     "PHAOFF": {
-      "price": 3.23,
-      "prevClose": 3.22,
+      "price": 3.1,
+      "prevClose": 3.23,
       "exchange": "BSE",
-      "lastTradeTime": 1781702356,
+      "lastTradeTime": 1781788395,
       "marketState": "CLOSED",
-      "savedAt": 1781702356917
+      "savedAt": 1781788395540
     },
     "PHICAR": {
-      "price": 309.7,
-      "prevClose": 305.95,
+      "price": 306.25,
+      "prevClose": 310.45,
       "exchange": "NSE",
-      "lastTradeTime": 1781702357,
+      "lastTradeTime": 1781788396,
       "marketState": "CLOSED",
-      "savedAt": 1781702357269
+      "savedAt": 1781788396000
     },
     "POWTRA": {
-      "price": 190.68,
-      "prevClose": 194.8,
+      "price": 188.95,
+      "prevClose": 190.55,
       "exchange": "NSE",
-      "lastTradeTime": 1781702358,
+      "lastTradeTime": 1781788397,
       "marketState": "CLOSED",
-      "savedAt": 1781702358557
+      "savedAt": 1781788397428
     },
     "PRILI": {
-      "price": 569.85,
-      "prevClose": 576.0,
+      "price": 559.4,
+      "prevClose": 569.8,
       "exchange": "NSE",
-      "lastTradeTime": 1781702358,
+      "lastTradeTime": 1781788397,
       "marketState": "CLOSED",
-      "savedAt": 1781702358842
+      "savedAt": 1781788397832
     },
     "PTCIND": {
-      "price": 31.38,
-      "prevClose": 31.3,
+      "price": 30.95,
+      "prevClose": 31.47,
       "exchange": "NSE",
-      "lastTradeTime": 1781702359,
+      "lastTradeTime": 1781788398,
       "marketState": "CLOSED",
-      "savedAt": 1781702359036
+      "savedAt": 1781788398174
     },
     "RAMFOR": {
-      "price": 584.0,
-      "prevClose": 583.5,
+      "price": 589.2,
+      "prevClose": 585.0,
       "exchange": "NSE",
-      "lastTradeTime": 1781702359,
+      "lastTradeTime": 1781788398,
       "marketState": "CLOSED",
-      "savedAt": 1781702359336
+      "savedAt": 1781788398648
     },
     "RATINF": {
-      "price": 35.33,
-      "prevClose": 35.62,
+      "price": 35.03,
+      "prevClose": 35.39,
       "exchange": "NSE",
-      "lastTradeTime": 1781702359,
+      "lastTradeTime": 1781788398,
       "marketState": "CLOSED",
-      "savedAt": 1781702359510
+      "savedAt": 1781788398997
     },
     "RAVHEI": {
-      "price": 44.46,
-      "prevClose": 44.56,
+      "price": 45.2,
+      "prevClose": 44.46,
       "exchange": "NSE",
-      "lastTradeTime": 1781702359,
+      "lastTradeTime": 1781788399,
       "marketState": "CLOSED",
-      "savedAt": 1781702359712
+      "savedAt": 1781788399373
     },
     "RELIND": {
-      "price": 1332.7,
-      "prevClose": 1328.0,
+      "price": 1328.1,
+      "prevClose": 1332.1,
       "exchange": "NSE",
-      "lastTradeTime": 1781702359,
+      "lastTradeTime": 1781788399,
       "marketState": "CLOSED",
-      "savedAt": 1781702359939
+      "savedAt": 1781788399791
     },
     "SARFOO": {
-      "price": 3.96,
-      "prevClose": 3.78,
+      "price": 3.98,
+      "prevClose": 3.96,
       "exchange": "NSE",
-      "lastTradeTime": 1781702360,
+      "lastTradeTime": 1781788400,
       "marketState": "CLOSED",
-      "savedAt": 1781702360204
+      "savedAt": 1781788400163
     },
     "SBICAR": {
-      "price": 625.7,
-      "prevClose": 622.0,
+      "price": 624.95,
+      "prevClose": 624.5,
       "exchange": "NSE",
-      "lastTradeTime": 1781702360,
+      "lastTradeTime": 1781788400,
       "marketState": "CLOSED",
-      "savedAt": 1781702360520
+      "savedAt": 1781788400538
     },
     "SHAAGR": {
-      "price": 0.35,
-      "prevClose": 0.36,
+      "price": 0.34,
+      "prevClose": 0.35,
       "exchange": "BSE",
-      "lastTradeTime": 1781702361,
+      "lastTradeTime": 1781788402,
       "marketState": "CLOSED",
-      "savedAt": 1781702361685
+      "savedAt": 1781788402227
     },
     "SHICEM": {
-      "price": 18.68,
-      "prevClose": 18.63,
+      "price": 18.72,
+      "prevClose": 18.68,
       "exchange": "BSE",
-      "lastTradeTime": 1781702363,
+      "lastTradeTime": 1781788404,
       "marketState": "CLOSED",
-      "savedAt": 1781702363759
+      "savedAt": 1781788404744
     },
     "SINHOT": {
-      "price": 76.45,
-      "prevClose": 76.22,
+      "price": 78.44,
+      "prevClose": 77.49,
       "exchange": "NSE",
-      "lastTradeTime": 1781702364,
+      "lastTradeTime": 1781788405,
       "marketState": "CLOSED",
-      "savedAt": 1781702364022
+      "savedAt": 1781788405147
     },
     "SPESEM": {
-      "price": 154.0,
-      "prevClose": 155.75,
+      "price": 153.35,
+      "prevClose": 154.0,
       "exchange": "BSE",
-      "lastTradeTime": 1781702364,
+      "lastTradeTime": 1781788406,
       "marketState": "CLOSED",
-      "savedAt": 1781702364993
+      "savedAt": 1781788406822
     },
     "STABAN": {
-      "price": 1026.5,
-      "prevClose": 1016.05,
+      "price": 1042.7,
+      "prevClose": 1026.5,
       "exchange": "NSE",
-      "lastTradeTime": 1781702365,
+      "lastTradeTime": 1781788407,
       "marketState": "CLOSED",
-      "savedAt": 1781702365340
+      "savedAt": 1781788407333
     },
     "TANAER": {
-      "price": 296.55,
-      "prevClose": 284.4,
+      "price": 299.45,
+      "prevClose": 296.55,
       "exchange": "BSE",
-      "lastTradeTime": 1781702366,
+      "lastTradeTime": 1781788409,
       "marketState": "CLOSED",
-      "savedAt": 1781702366235
+      "savedAt": 1781788409002
     },
     "TATPOW": {
-      "price": 401.5,
-      "prevClose": 401.75,
+      "price": 402.9,
+      "prevClose": 401.5,
       "exchange": "NSE",
-      "lastTradeTime": 1781702366,
+      "lastTradeTime": 1781788409,
       "marketState": "CLOSED",
-      "savedAt": 1781702366640
+      "savedAt": 1781788409439
     },
     "TATSTE": {
-      "price": 199.01,
-      "prevClose": 196.0,
+      "price": 200.52,
+      "prevClose": 199.01,
       "exchange": "NSE",
-      "lastTradeTime": 1781702366,
+      "lastTradeTime": 1781788409,
       "marketState": "CLOSED",
-      "savedAt": 1781702366980
+      "savedAt": 1781788409796
     },
     "TCS": {
-      "price": 2223.0,
-      "prevClose": 2197.9,
+      "price": 2203.3,
+      "prevClose": 2221.0,
       "exchange": "NSE",
-      "lastTradeTime": 1781702367,
+      "lastTradeTime": 1781788410,
       "marketState": "CLOSED",
-      "savedAt": 1781702367226
+      "savedAt": 1781788410273
     },
     "TEXRAI": {
-      "price": 109.52,
-      "prevClose": 107.83,
+      "price": 109.32,
+      "prevClose": 109.7,
       "exchange": "NSE",
-      "lastTradeTime": 1781702367,
+      "lastTradeTime": 1781788410,
       "marketState": "CLOSED",
-      "savedAt": 1781702367598
+      "savedAt": 1781788410701
     },
     "TRIGLA": {
-      "price": 6.7,
-      "prevClose": 6.75,
+      "price": 6.52,
+      "prevClose": 6.7,
       "exchange": "BSE",
-      "lastTradeTime": 1781702368,
+      "lastTradeTime": 1781788412,
       "marketState": "CLOSED",
-      "savedAt": 1781702368596
+      "savedAt": 1781788412208
     },
     "TRILTD": {
-      "price": 24.93,
-      "prevClose": 24.95,
+      "price": 25.97,
+      "prevClose": 24.8,
       "exchange": "NSE",
-      "lastTradeTime": 1781702369,
+      "lastTradeTime": 1781788413,
       "marketState": "CLOSED",
-      "savedAt": 1781702369903
+      "savedAt": 1781788413624
     },
     "UNIBAN": {
-      "price": 173.75,
-      "prevClose": 170.48,
+      "price": 176.12,
+      "prevClose": 173.66,
       "exchange": "NSE",
-      "lastTradeTime": 1781702373,
+      "lastTradeTime": 1781788417,
       "marketState": "CLOSED",
-      "savedAt": 1781702373140
+      "savedAt": 1781788417711
     },
     "UNISPI": {
-      "price": 1308.0,
-      "prevClose": 1299.0,
+      "price": 1350.3,
+      "prevClose": 1308.6,
       "exchange": "NSE",
-      "lastTradeTime": 1781702373,
+      "lastTradeTime": 1781788418,
       "marketState": "CLOSED",
-      "savedAt": 1781702373363
+      "savedAt": 1781788418115
     },
     "VATWAB": {
-      "price": 1766.5,
-      "prevClose": 1759.0,
+      "price": 1821.8,
+      "prevClose": 1766.5,
       "exchange": "NSE",
-      "lastTradeTime": 1781702373,
+      "lastTradeTime": 1781788418,
       "marketState": "CLOSED",
-      "savedAt": 1781702373724
+      "savedAt": 1781788418463
     },
     "VIKMUL": {
       "price": 1.49,
-      "prevClose": 1.48,
+      "prevClose": 1.49,
       "exchange": "NSE",
-      "lastTradeTime": 1781702373,
+      "lastTradeTime": 1781788418,
       "marketState": "CLOSED",
-      "savedAt": 1781702373999
+      "savedAt": 1781788418814
     },
     "WEBENE": {
-      "price": 106.32,
-      "prevClose": 106.0,
+      "price": 104.1,
+      "prevClose": 106.3,
       "exchange": "NSE",
-      "lastTradeTime": 1781702374,
+      "lastTradeTime": 1781788419,
       "marketState": "CLOSED",
-      "savedAt": 1781702374265
+      "savedAt": 1781788419146
     },
     "WELIND": {
-      "price": 146.65,
-      "prevClose": 145.78,
+      "price": 163.0,
+      "prevClose": 147.4,
       "exchange": "NSE",
-      "lastTradeTime": 1781702374,
+      "lastTradeTime": 1781788419,
       "marketState": "CLOSED",
-      "savedAt": 1781702374558
+      "savedAt": 1781788419575
     },
     "YESBAN": {
-      "price": 25.11,
-      "prevClose": 23.9,
+      "price": 25.48,
+      "prevClose": 25.12,
       "exchange": "NSE",
-      "lastTradeTime": 1781702374,
+      "lastTradeTime": 1781788419,
       "marketState": "CLOSED",
-      "savedAt": 1781702374762
+      "savedAt": 1781788419981
     },
     "ZEEENT": {
-      "price": 109.97,
-      "prevClose": 110.75,
+      "price": 111.78,
+      "prevClose": 110.1,
       "exchange": "NSE",
-      "lastTradeTime": 1781702375,
+      "lastTradeTime": 1781788420,
       "marketState": "CLOSED",
-      "savedAt": 1781702375006
+      "savedAt": 1781788420460
     },
     "ZEEMED": {
-      "price": 8.38,
-      "prevClose": 8.31,
+      "price": 8.49,
+      "prevClose": 8.41,
       "exchange": "NSE",
-      "lastTradeTime": 1781702376,
+      "lastTradeTime": 1781788421,
       "marketState": "CLOSED",
-      "savedAt": 1781702376241
+      "savedAt": 1781788421861
     },
     "ZOMLIM": {
-      "price": 258.4,
-      "prevClose": 253.6,
+      "price": 258.55,
+      "prevClose": 258.4,
       "exchange": "NSE",
-      "lastTradeTime": 1781702376,
+      "lastTradeTime": 1781788422,
       "marketState": "CLOSED",
-      "savedAt": 1781702376481
+      "savedAt": 1781788422229
     },
     "ZUAAGR": {
-      "price": 237.96,
-      "prevClose": 234.66,
+      "price": 234.98,
+      "prevClose": 237.96,
       "exchange": "NSE",
-      "lastTradeTime": 1781702376,
+      "lastTradeTime": 1781788422,
       "marketState": "CLOSED",
-      "savedAt": 1781702376741
+      "savedAt": 1781788422630
     }
   },
-  "savedAt": "2026-06-17T13:19:36.741842+00:00",
+  "savedAt": "2026-06-18T13:13:42.630420+00:00",
   "source": "github-actions"
 }
