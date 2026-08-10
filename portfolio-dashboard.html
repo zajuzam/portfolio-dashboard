@@ -666,8 +666,8 @@
   <div class="tab-panel" data-tab="rhhistory">
 
   <div style="margin: 8px 4px 18px; color: var(--muted); font-size: 13px;">
-    Robinhood YTD profit &amp; loss (USD), recorded locally each day you open the dashboard.
-    Seeded from your app snapshot — YTD $7,739.56 on 10-Aug-2026. One point is added per day; the curve grows over time.
+    YTD profit &amp; loss (USD) for both Robinhood accounts, recorded locally each day you open the dashboard.
+    Seeded 10-Aug-2026 — Robinhood $7,739.56, Agentic −$4.19. One point is added per account per day; the curves grow over time.
   </div>
 
   <section class="hist-kpis">
@@ -1634,37 +1634,47 @@
   document.getElementById("rhExportBtn").addEventListener("click", exportRhCsv);
 
   // ---- YTD P&L chart (self-logging via localStorage) ----
-  const RH_YTD = 7739.56;               // YTD unrealized P&L from Robinhood app
+  // Two series: main Robinhood account + Agentic account.
+  const RH_YTD = 7739.56;               // YTD P&L from Robinhood app (main account)
+  const AG_YTD = -4.19;                 // Agentic YTD ≈ current unrealized (account funded this year)
   const RH_YTD_KEY = "rhYtdSeries_v1";
+  const AG_YTD_KEY = "agYtdSeries_v1";
   let rhYtdChart = null;
 
-  function rhYtdSeries() {
+  // Upsert today's value into a localStorage-backed {date: value} map.
+  function ytdUpsert(key, val) {
     let series = {};
-    try { series = JSON.parse(localStorage.getItem(RH_YTD_KEY)) || {}; } catch (_) {}
+    try { series = JSON.parse(localStorage.getItem(key)) || {}; } catch (_) {}
     const today = new Date().toISOString().slice(0, 10);
-    series[today] = RH_YTD;              // upsert today's value from the current snapshot
-    try { localStorage.setItem(RH_YTD_KEY, JSON.stringify(series)); } catch (_) {}
-    return Object.keys(series).sort().map(d => ({ date: d, value: series[d] }));
+    series[today] = val;
+    try { localStorage.setItem(key, JSON.stringify(series)); } catch (_) {}
+    return series;
   }
+  function rhYtdSeries() { return ytdUpsert(RH_YTD_KEY, RH_YTD); }
+  function agYtdSeries() { return ytdUpsert(AG_YTD_KEY, AG_YTD); }
 
   function renderRhYtd() {
     const canvas = document.getElementById("rhYtdChart");
     if (!canvas) return;
-    const data = rhYtdSeries();
-    const labels = data.map(d => d.date);
-    const values = data.map(d => d.value);
+    const rh = rhYtdSeries();
+    const ag = agYtdSeries();
+    const labels = Array.from(new Set([...Object.keys(rh), ...Object.keys(ag)])).sort();
+    const rhVals = labels.map(d => (d in rh ? rh[d] : null));
+    const agVals = labels.map(d => (d in ag ? ag[d] : null));
 
-    // KPI cards (mirrors the History tab)
-    const latest = values[values.length - 1];
-    const first  = values[0];
-    const high   = Math.max(...values);
+    // KPI cards track the main Robinhood series
+    const rhDates = labels.filter(d => d in rh);
+    const values  = rhDates.map(d => rh[d]);
+    const latest  = values[values.length - 1];
+    const first   = values[0];
+    const high    = Math.max(...values);
     const highIdx = values.indexOf(high);
     const change  = latest - first;
     const changePct = first ? (change / first) * 100 : 0;
     document.getElementById("rhHistLatest").textContent = usd0(latest);
-    document.getElementById("rhHistLatestDate").textContent = labels[labels.length - 1];
+    document.getElementById("rhHistLatestDate").textContent = rhDates[rhDates.length - 1] + " · Robinhood";
     document.getElementById("rhHistHigh").textContent = usd0(high);
-    document.getElementById("rhHistHighDate").textContent = labels[highIdx];
+    document.getElementById("rhHistHighDate").textContent = rhDates[highIdx];
     const chEl = document.getElementById("rhHistChange");
     chEl.textContent = (change >= 0 ? "+" : "−") + usd0(Math.abs(change));
     chEl.className = "value " + cls(change);
@@ -1673,9 +1683,9 @@
     cpEl.className = "delta " + cls(change);
 
     document.getElementById("rhHistSub").textContent =
-      data.length > 1
-        ? `${data.length} recorded days · ${labels[0]} → ${labels[labels.length - 1]}`
-        : `Seeded today at $${RH_YTD.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} — a curve builds as you reopen the dashboard.`;
+      labels.length > 1
+        ? `${labels.length} recorded days · ${labels[0]} → ${labels[labels.length - 1]}`
+        : `Seeded today — Robinhood $${RH_YTD.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}, Agentic $${AG_YTD.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}. Curves build as you reopen the dashboard.`;
 
     if (rhYtdChart) rhYtdChart.destroy();
     const ctx = canvas.getContext("2d");
@@ -1683,28 +1693,44 @@
       type: "line",
       data: {
         labels,
-        datasets: [{
-          label: "YTD P&L",
-          data: values,
-          borderColor: "#21c07a",
-          backgroundColor: "rgba(33,192,122,0.10)",
-          borderWidth: 2.5,
-          pointRadius: values.length <= 30 ? 5 : 3,
-          pointBackgroundColor: "#21c07a",
-          pointHoverRadius: 7,
-          fill: true,
-          tension: 0.3
-        }]
+        datasets: [
+          {
+            label: "Robinhood YTD",
+            data: rhVals,
+            borderColor: "#21c07a",
+            backgroundColor: "rgba(33,192,122,0.10)",
+            borderWidth: 2.5,
+            pointRadius: labels.length <= 30 ? 5 : 3,
+            pointBackgroundColor: "#21c07a",
+            pointHoverRadius: 7,
+            fill: true,
+            tension: 0.3,
+            spanGaps: true
+          },
+          {
+            label: "Agentic YTD",
+            data: agVals,
+            borderColor: "#4f8cff",
+            backgroundColor: "rgba(79,140,255,0.10)",
+            borderWidth: 2.5,
+            pointRadius: labels.length <= 30 ? 5 : 3,
+            pointBackgroundColor: "#4f8cff",
+            pointHoverRadius: 7,
+            fill: true,
+            tension: 0.3,
+            spanGaps: true
+          }
+        ]
       },
       options: {
         responsive: true,
         interaction: { mode: "index", intersect: false },
         plugins: {
-          legend: { display: false },
+          legend: { display: true, labels: { color: "#8a93a8", usePointStyle: true, boxWidth: 8 } },
           tooltip: {
             backgroundColor: "#1d2438", borderColor: "#2a3350", borderWidth: 1,
             titleColor: "#8a93a8", bodyColor: "#e6e9f2",
-            callbacks: { label: c => "  $" + c.parsed.y.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }
+            callbacks: { label: c => `  ${c.dataset.label}: $${c.parsed.y.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` }
           }
         },
         scales: {
@@ -1716,7 +1742,7 @@
   }
 
   document.getElementById("rhHistResetBtn").addEventListener("click", () => {
-    try { localStorage.removeItem(RH_YTD_KEY); } catch (_) {}
+    try { localStorage.removeItem(RH_YTD_KEY); localStorage.removeItem(AG_YTD_KEY); } catch (_) {}
     renderRhYtd();
   });
 
@@ -1923,7 +1949,8 @@
   renderMfs();
   renderRh();
   renderAg();
-  rhYtdSeries();   // log today's YTD point on load; chart renders when its tab opens
+  rhYtdSeries();   // log today's YTD points on load; chart renders when its tab opens
+  agYtdSeries();
 </script>
 </body>
 </html>
