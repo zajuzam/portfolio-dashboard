@@ -279,6 +279,7 @@
     <div class="tab active" data-tab="stocks">📈 Stocks <span class="count">113</span></div>
     <div class="tab" data-tab="mfs">📊 Mutual Funds <span class="count">3</span></div>
     <div class="tab" data-tab="robinhood">🇺🇸 Robinhood <span class="count">29</span></div>
+    <div class="tab" data-tab="agentic">🤖 Agentic <span class="count">6</span></div>
     <div class="tab" data-tab="combined">💼 Combined</div>
     <div class="tab" data-tab="history">📉 History</div>
     <div class="tab" data-tab="rhhistory">📉 History-Robinhood</div>
@@ -517,6 +518,80 @@
   </div>
 
   </div><!-- /tab-panel robinhood -->
+
+  <!-- ============== AGENTIC (Robinhood) TAB ============== -->
+  <div class="tab-panel" data-tab="agentic">
+
+  <section class="kpis">
+    <div class="kpi">
+      <div class="label">Holdings Value</div>
+      <div class="value" id="agKpiValue">—</div>
+      <div class="delta" id="agKpiValueSub">6 US positions</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Day's P&L</div>
+      <div class="value" id="agKpiDay">—</div>
+      <div class="delta" id="agKpiDayPct">&nbsp;</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Total Gain / Loss</div>
+      <div class="value" id="agKpiGain">—</div>
+      <div class="delta" id="agKpiGainPct">vs cost basis</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Cash</div>
+      <div class="value" id="agKpiCash">—</div>
+      <div class="delta" id="agKpiAccount">account value —</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Top Mover</div>
+      <div class="value" id="agKpiTop" style="font-size:18px;">—</div>
+      <div class="delta" id="agKpiTopPct">&nbsp;</div>
+    </div>
+  </section>
+
+  <section class="controls">
+    <input type="text" id="agSearchInput" placeholder="🔍 Search by symbol or name…" />
+    <button class="btn secondary" id="agExportBtn" type="button">Export CSV</button>
+    <div style="flex:1 1 100%; color:var(--muted); font-size:11.5px;" id="agSub">
+      Robinhood <b>Agentic</b> account (••5213) &middot; prices as of 10-Aug-2026, 11:27 AM ET. All values in USD.
+    </div>
+  </section>
+
+  <div class="table-wrap">
+    <table id="agtable">
+      <thead>
+        <tr>
+          <th data-agsort="symbol" style="width:90px;">Symbol <span class="arrow">↕</span></th>
+          <th data-agsort="name">Name <span class="arrow">↕</span></th>
+          <th data-agsort="qty" class="num">Qty <span class="arrow">↕</span></th>
+          <th data-agsort="avg" class="num">Avg Cost <span class="arrow">↕</span></th>
+          <th data-agsort="price" class="num">Price <span class="arrow">↕</span></th>
+          <th data-agsort="dayChg" class="num">Day Δ <span class="arrow">↕</span></th>
+          <th data-agsort="dayPct" class="num">Day % <span class="arrow">↕</span></th>
+          <th data-agsort="value" class="num">Market Value <span class="arrow">↕</span></th>
+          <th data-agsort="gain" class="num">Total G/L <span class="arrow">↕</span></th>
+        </tr>
+      </thead>
+      <tbody id="agtbody"></tbody>
+      <tfoot>
+        <tr>
+          <td colspan="4" class="total-label">Agentic Total</td>
+          <td class="num" id="agFootPrice">—</td>
+          <td class="num" id="agFootDayChg">—</td>
+          <td class="num" id="agFootDayPct">—</td>
+          <td class="num" id="agFootValue">—</td>
+          <td class="num" id="agFootGain">—</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <div class="status" id="agStatus">
+    Snapshot of <b>6 holdings</b> from your Robinhood <b>Agentic</b> account. Static — prices captured at snapshot time. Ask me to refresh for fresh quotes.
+  </div>
+
+  </div><!-- /tab-panel agentic -->
 
   <!-- ============== COMBINED TAB ============== -->
   <div class="tab-panel" data-tab="combined">
@@ -1654,6 +1729,151 @@
     });
   });
 
+  // ============================================================
+  // ---- Agentic (Robinhood) portfolio ----
+  // Snapshot from the Robinhood "Agentic" account (••5213).
+  // Snapshot: 10-Aug-2026, 11:27 AM ET.
+  // ============================================================
+  const AG_CASH = 0;
+  const AG_ACCOUNT_VALUE = 995.81;
+  const AGENTIC = [
+    { symbol: "QQQ",   name: "Invesco QQQ Trust",       qty: 0.414531, avg: 723.71, price: 721.275, prev: 723.03 },
+    { symbol: "NVDA",  name: "NVIDIA Corp",             qty: 0.680673, avg: 220.37, price: 219.11,  prev: 223.96 },
+    { symbol: "MSFT",  name: "Microsoft Corp",          qty: 0.293206, avg: 511.59, price: 509.18,  prev: 499.99 },
+    { symbol: "AMZN",  name: "Amazon.com Inc",          qty: 0.539200, avg: 278.19, price: 279.37,  prev: 274.48 },
+    { symbol: "GOOGL", name: "Alphabet Inc (Class A)",  qty: 0.420959, avg: 356.33, price: 354.04,  prev: 354.30 },
+    { symbol: "AVGO",  name: "Broadcom Inc",            qty: 0.232417, avg: 430.26, price: 424.735, prev: 427.76 }
+  ];
+
+  let agSortKey = "value", agSortDir = -1, agSearchQuery = "";
+
+  function agFilteredSorted() {
+    const q = agSearchQuery.trim().toLowerCase();
+    let list = AGENTIC.slice();
+    if (q) list = list.filter(r =>
+      r.symbol.toLowerCase().includes(q) || r.name.toLowerCase().includes(q));
+    const dir = agSortDir;
+    list.sort((a, b) => {
+      const ca = rhCompute(a), cb = rhCompute(b);
+      let av, bv;
+      switch (agSortKey) {
+        case "symbol": av = a.symbol; bv = b.symbol; break;
+        case "name":   av = a.name;   bv = b.name;   break;
+        case "qty":    av = a.qty;    bv = b.qty;    break;
+        case "avg":    av = a.avg;    bv = b.avg;    break;
+        case "price":  av = a.price;  bv = b.price;  break;
+        case "dayChg": av = ca.dayChg; bv = cb.dayChg; break;
+        case "dayPct": av = ca.dayPct; bv = cb.dayPct; break;
+        case "value":  av = ca.value; bv = cb.value; break;
+        case "gain":   av = ca.gain;  bv = cb.gain;  break;
+      }
+      if (typeof av === "string") return av.localeCompare(bv) * dir;
+      return ((av || 0) - (bv || 0)) * dir;
+    });
+    return list;
+  }
+
+  function renderAg() {
+    const tb = document.getElementById("agtbody");
+    tb.innerHTML = "";
+    let totValue = 0, totCost = 0, totDay = 0, totPrev = 0;
+    let top = null;
+
+    AGENTIC.forEach(r => {
+      const c = rhCompute(r);
+      totValue += c.value; totCost += c.cost; totDay += c.dayChg;
+      totPrev += r.prev * r.qty;
+      if (!top || Math.abs(c.dayPct) > Math.abs(top.pct)) top = { sym: r.symbol, pct: c.dayPct };
+    });
+
+    agFilteredSorted().forEach(r => {
+      const c = rhCompute(r);
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td><span class="sym">${r.symbol}</span></td>
+        <td><div class="name">${r.name}</div></td>
+        <td class="num">${r.qty.toLocaleString("en-US", { maximumFractionDigits: 6 })}</td>
+        <td class="num">${usd(r.avg)}</td>
+        <td class="num">${usd(r.price)}</td>
+        <td class="num ${cls(c.dayChg)}">${usdSigned(c.dayChg)}</td>
+        <td class="num ${cls(c.dayPct)}">${pct(c.dayPct)}</td>
+        <td class="num"><b>${usd(c.value)}</b></td>
+        <td class="num ${cls(c.gain)}">${usdSigned(c.gain)}<span class="as-of">${pct(c.gainPct)}</span></td>
+      `;
+      tb.appendChild(tr);
+    });
+
+    document.getElementById("agFootValue").textContent = usd(totValue);
+    document.getElementById("agFootGain").textContent  = usdSigned(totValue - totCost);
+    document.getElementById("agFootGain").className = "num " + cls(totValue - totCost);
+    const fd = document.getElementById("agFootDayChg");
+    fd.textContent = usdSigned(totDay); fd.className = "num " + cls(totDay);
+    const totDayPct = totPrev ? (totDay / totPrev) * 100 : 0;
+    const fdp = document.getElementById("agFootDayPct");
+    fdp.textContent = pct(totDayPct); fdp.className = "num " + cls(totDay);
+
+    document.getElementById("agKpiValue").textContent = usd0(totValue);
+    const kd = document.getElementById("agKpiDay");
+    kd.textContent = (totDay >= 0 ? "+" : "−") + usd0(Math.abs(totDay));
+    kd.className = "value " + cls(totDay);
+    const kdp = document.getElementById("agKpiDayPct");
+    kdp.textContent = pct(totDayPct); kdp.className = "delta " + cls(totDay);
+    const gain = totValue - totCost, gainPct = totCost ? (gain / totCost) * 100 : 0;
+    const kg = document.getElementById("agKpiGain");
+    kg.textContent = (gain >= 0 ? "+" : "−") + usd0(Math.abs(gain));
+    kg.className = "value " + cls(gain);
+    const kgp = document.getElementById("agKpiGainPct");
+    kgp.textContent = pct(gainPct); kgp.className = "delta " + cls(gain);
+    document.getElementById("agKpiCash").textContent = usd0(AG_CASH);
+    document.getElementById("agKpiAccount").textContent = "account value " + usd(AG_ACCOUNT_VALUE);
+    if (top) {
+      document.getElementById("agKpiTop").textContent = top.sym;
+      const kt = document.getElementById("agKpiTopPct");
+      kt.textContent = pct(top.pct); kt.className = "delta " + cls(top.pct);
+    }
+
+    document.querySelectorAll("#agtable thead th").forEach(th => {
+      th.classList.remove("sorted");
+      const a = th.querySelector(".arrow");
+      if (a) a.textContent = "↕";
+      if (th.dataset.agsort === agSortKey) {
+        th.classList.add("sorted");
+        if (a) a.textContent = agSortDir === 1 ? "↑" : "↓";
+      }
+    });
+  }
+
+  function exportAgCsv() {
+    const headers = ["Symbol","Name","Qty","Avg Cost","Price","Day Change","Day %","Market Value","Total G/L","G/L %"];
+    const lines = [headers.join(",")];
+    AGENTIC.forEach(r => {
+      const c = rhCompute(r);
+      lines.push([
+        r.symbol, '"' + r.name.replace(/"/g,'""') + '"', r.qty,
+        r.avg.toFixed(2), r.price.toFixed(4), c.dayChg.toFixed(2),
+        c.dayPct.toFixed(2), c.value.toFixed(2), c.gain.toFixed(2), c.gainPct.toFixed(2)
+      ].join(","));
+    });
+    const blob = new Blob([lines.join("\n")], { type: "text/csv" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `agentic_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+  }
+
+  document.getElementById("agSearchInput").addEventListener("input", e => {
+    agSearchQuery = e.target.value; renderAg();
+  });
+  document.getElementById("agExportBtn").addEventListener("click", exportAgCsv);
+  document.querySelectorAll("#agtable thead th[data-agsort]").forEach(th => {
+    th.addEventListener("click", () => {
+      const k = th.dataset.agsort;
+      if (agSortKey === k) agSortDir = -agSortDir;
+      else { agSortKey = k; agSortDir = (k === "symbol" || k === "name") ? 1 : -1; }
+      renderAg();
+    });
+  });
+
   // ---- Wire up ----
   document.getElementById("refreshBtn").addEventListener("click", fetchLive);
   document.getElementById("mfRefreshBtn").addEventListener("click", fetchMfNavs);
@@ -1690,7 +1910,7 @@
   // Restore last-active tab
   try {
     const saved = localStorage.getItem("activeTab_v1");
-    if (saved && ["stocks","mfs","robinhood","combined","history","rhhistory"].includes(saved)) {
+    if (saved && ["stocks","mfs","robinhood","agentic","combined","history","rhhistory"].includes(saved)) {
       switchTab(saved);
       if (saved === "history") loadHistory();
       if (saved === "rhhistory") renderRhYtd();
@@ -1702,6 +1922,7 @@
   render();
   renderMfs();
   renderRh();
+  renderAg();
   rhYtdSeries();   // log today's YTD point on load; chart renders when its tab opens
 </script>
 </body>
