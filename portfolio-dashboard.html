@@ -278,8 +278,10 @@
   <nav class="tabs" id="tabs">
     <div class="tab active" data-tab="stocks">📈 Stocks <span class="count">113</span></div>
     <div class="tab" data-tab="mfs">📊 Mutual Funds <span class="count">3</span></div>
+    <div class="tab" data-tab="robinhood">🇺🇸 Robinhood <span class="count">29</span></div>
     <div class="tab" data-tab="combined">💼 Combined</div>
     <div class="tab" data-tab="history">📉 History</div>
+    <div class="tab" data-tab="rhhistory">📉 History-Robinhood</div>
   </nav>
 
   <!-- ============== STOCKS TAB ============== -->
@@ -415,6 +417,107 @@
 
   </div><!-- /tab-panel mfs -->
 
+  <!-- ============== ROBINHOOD (US) TAB ============== -->
+  <div class="tab-panel" data-tab="robinhood">
+
+  <section class="kpis">
+    <div class="kpi">
+      <div class="label">Holdings Value</div>
+      <div class="value" id="rhKpiValue">—</div>
+      <div class="delta" id="rhKpiValueSub">29 US positions</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Day's P&L</div>
+      <div class="value" id="rhKpiDay">—</div>
+      <div class="delta" id="rhKpiDayPct">&nbsp;</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Total Gain / Loss</div>
+      <div class="value" id="rhKpiGain">—</div>
+      <div class="delta" id="rhKpiGainPct">vs cost basis</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Cash</div>
+      <div class="value" id="rhKpiCash">—</div>
+      <div class="delta" id="rhKpiAccount">account value —</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Top Mover</div>
+      <div class="value" id="rhKpiTop" style="font-size:18px;">—</div>
+      <div class="delta" id="rhKpiTopPct">&nbsp;</div>
+    </div>
+  </section>
+
+  <section class="chart-wrap" style="margin-bottom:14px;">
+    <div class="chart-header">
+      <div>
+        <h2>Profit &amp; Loss</h2>
+        <div class="sub">From your Robinhood app &middot; snapshot 10-Aug-2026 &middot; see the <b>History-Robinhood</b> tab for the YTD chart</div>
+      </div>
+    </div>
+    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:12px;" id="rhPnlGrid">
+      <div class="kpi" style="box-shadow:none;">
+        <div class="label">Today</div>
+        <div class="value pos" style="font-size:19px;">▲ $230.92</div>
+      </div>
+      <div class="kpi" style="box-shadow:none;">
+        <div class="label">YTD</div>
+        <div class="value pos" style="font-size:19px;">▲ $7,739.56</div>
+      </div>
+      <div class="kpi" style="box-shadow:none;">
+        <div class="label">Day's Realized</div>
+        <div class="value" style="font-size:19px;color:var(--muted);">$0.00</div>
+      </div>
+      <div class="kpi" style="box-shadow:none;">
+        <div class="label">YTD Realized</div>
+        <div class="value" style="font-size:19px;color:var(--muted);">$0.00</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="controls">
+    <input type="text" id="rhSearchInput" placeholder="🔍 Search by symbol or name…" />
+    <button class="btn secondary" id="rhExportBtn" type="button">Export CSV</button>
+    <div style="flex:1 1 100%; color:var(--muted); font-size:11.5px;" id="rhSub">
+      Static snapshot from Robinhood (account ••8275) &middot; prices as of 10-Aug-2026, 10:54 AM ET. All values in USD.
+    </div>
+  </section>
+
+  <div class="table-wrap">
+    <table id="rhtable">
+      <thead>
+        <tr>
+          <th data-rhsort="symbol" style="width:90px;">Symbol <span class="arrow">↕</span></th>
+          <th data-rhsort="name">Name <span class="arrow">↕</span></th>
+          <th data-rhsort="qty" class="num">Qty <span class="arrow">↕</span></th>
+          <th data-rhsort="avg" class="num">Avg Cost <span class="arrow">↕</span></th>
+          <th data-rhsort="price" class="num">Price <span class="arrow">↕</span></th>
+          <th data-rhsort="dayChg" class="num">Day Δ <span class="arrow">↕</span></th>
+          <th data-rhsort="dayPct" class="num">Day % <span class="arrow">↕</span></th>
+          <th data-rhsort="value" class="num">Market Value <span class="arrow">↕</span></th>
+          <th data-rhsort="gain" class="num">Total G/L <span class="arrow">↕</span></th>
+        </tr>
+      </thead>
+      <tbody id="rhtbody"></tbody>
+      <tfoot>
+        <tr>
+          <td colspan="4" class="total-label">Robinhood Total</td>
+          <td class="num" id="rhFootPrice">—</td>
+          <td class="num" id="rhFootDayChg">—</td>
+          <td class="num" id="rhFootDayPct">—</td>
+          <td class="num" id="rhFootValue">—</td>
+          <td class="num" id="rhFootGain">—</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <div class="status" id="rhStatus">
+    Snapshot of <b>29 holdings</b> from your Robinhood individual account. This tab is static — prices were captured when the snapshot was taken. Ask me to refresh and I'll pull fresh quotes.
+  </div>
+
+  </div><!-- /tab-panel robinhood -->
+
   <!-- ============== COMBINED TAB ============== -->
   <div class="tab-panel" data-tab="combined">
 
@@ -483,6 +586,45 @@
   </div>
 
   </div><!-- /tab-panel history -->
+
+  <!-- ============== HISTORY — ROBINHOOD TAB ============== -->
+  <div class="tab-panel" data-tab="rhhistory">
+
+  <div style="margin: 8px 4px 18px; color: var(--muted); font-size: 13px;">
+    Robinhood YTD profit &amp; loss (USD), recorded locally each day you open the dashboard.
+    Seeded from your app snapshot — YTD $7,739.56 on 10-Aug-2026. One point is added per day; the curve grows over time.
+  </div>
+
+  <section class="hist-kpis">
+    <div class="kpi">
+      <div class="label">Latest YTD P&L</div>
+      <div class="value" id="rhHistLatest">—</div>
+      <div class="delta" id="rhHistLatestDate">&nbsp;</div>
+    </div>
+    <div class="kpi">
+      <div class="label">All-Time High</div>
+      <div class="value" id="rhHistHigh">—</div>
+      <div class="delta" id="rhHistHighDate">&nbsp;</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Change (first → latest)</div>
+      <div class="value" id="rhHistChange">—</div>
+      <div class="delta" id="rhHistChangePct">&nbsp;</div>
+    </div>
+  </section>
+
+  <div class="chart-wrap">
+    <div class="chart-header">
+      <div>
+        <h2>Robinhood YTD P&amp;L Over Time</h2>
+        <div class="sub" id="rhHistSub">Loading…</div>
+      </div>
+      <button class="btn secondary" id="rhHistResetBtn" type="button" title="Clear the recorded YTD history">⟲ Reset</button>
+    </div>
+    <canvas id="rhYtdChart"></canvas>
+  </div>
+
+  </div><!-- /tab-panel rhhistory -->
 
 </div>
 
@@ -1237,6 +1379,281 @@
     btn.disabled = false;
   }
 
+  // ============================================================
+  // ---- Robinhood (US) portfolio ----
+  // Static snapshot pulled from the Robinhood connector.
+  // qty & avg = position; price = last trade; prev = adjusted prev close.
+  // Snapshot: 10-Aug-2026, 10:54 AM ET.
+  // ============================================================
+  const RH_SNAPSHOT_LABEL = "10-Aug-2026, 10:54 AM ET";
+  const RH_CASH = 63334.86;
+  const RH_ACCOUNT_VALUE = 124878.98;
+  const ROBINHOOD = [
+    { symbol: "VTI",   name: "Vanguard Total Stock Market ETF",   qty: 59.193832,  avg: 257.24, price: 382.10,   prev: 381.78 },
+    { symbol: "VWO",   name: "Vanguard FTSE Emerging Markets ETF",qty: 0.597108,   avg: 41.94,  price: 60.355,   prev: 60.47 },
+    { symbol: "VEA",   name: "Vanguard FTSE Developed Markets ETF",qty: 12.887074, avg: 43.30,  price: 72.615,   prev: 72.89 },
+    { symbol: "BND",   name: "Vanguard Total Bond Market ETF",    qty: 3.447055,   avg: 74.50,  price: 72.235,   prev: 72.40 },
+    { symbol: "JBLU",  name: "JetBlue Airways Corp",              qty: 110,        avg: 8.03,   price: 5.765,    prev: 6.07 },
+    { symbol: "GPRO",  name: "GoPro Inc",                         qty: 73.333137,  avg: 6.82,   price: 0.7048,   prev: 0.7258 },
+    { symbol: "BWAY",  name: "BrainsWay Ltd",                     qty: 599.214758, avg: 4.60,   price: 15.4699,  prev: 15.50 },
+    { symbol: "FF",    name: "FutureFuel Corp",                   qty: 52.655343,  avg: 5.35,   price: 5.24,     prev: 5.09 },
+    { symbol: "TSLA",  name: "Tesla Inc",                         qty: 4.334378,   avg: 346.07, price: 330.18,   prev: 328.58 },
+    { symbol: "WAVE",  name: "Wave Life Sciences",                qty: 240,        avg: 3.95,   price: 6.7183,   prev: 6.94 },
+    { symbol: "GRAB",  name: "Grab Holdings Ltd",                 qty: 148.367952, avg: 3.37,   price: 3.6311,   prev: 3.66 },
+    { symbol: "SQM",   name: "Sociedad Quimica y Minera de Chile",qty: 7.027390,   avg: 71.15,  price: 72.61,    prev: 71.95 },
+    { symbol: "ADNH",  name: "ADNH (unlisted)",                   qty: 1,          avg: 92.69,  price: 0.0021,   prev: 0.0021 },
+    { symbol: "BBAI",  name: "BigBear.ai Holdings",               qty: 100,        avg: 9.61,   price: 3.16,     prev: 3.27 },
+    { symbol: "ULCC",  name: "Frontier Group Holdings",           qty: 50,         avg: 9.00,   price: 7.045,    prev: 7.38 },
+    { symbol: "KLXE",  name: "KLX Energy Services Holdings",      qty: 50,         avg: 11.41,  price: 2.1503,   prev: 2.06 },
+    { symbol: "CXM",   name: "Sprinklr Inc",                      qty: 35,         avg: 22.04,  price: 6.925,    prev: 6.86 },
+    { symbol: "EVGO",  name: "EVgo Inc",                          qty: 100,        avg: 15.00,  price: 1.555,    prev: 1.62 },
+    { symbol: "GDRX",  name: "GoodRx Holdings",                   qty: 50,         avg: 15.80,  price: 3.77,     prev: 3.68 },
+    { symbol: "CVX",   name: "Chevron Corp",                      qty: 6,          avg: 135.91, price: 192.745,  prev: 186.56 },
+    { symbol: "RYTM",  name: "Rhythm Pharmaceuticals",            qty: 50,         avg: 9.18,   price: 116.17,   prev: 115.63 },
+    { symbol: "TTWO",  name: "Take-Two Interactive Software",     qty: 20,         avg: 116.12, price: 250.585,  prev: 246.50 },
+    { symbol: "CLBT",  name: "Cellebrite DI Ltd",                 qty: 300,        avg: 7.31,   price: 16.29,    prev: 16.01 },
+    { symbol: "WCPRF", name: "West China Cement Ltd",             qty: 157,        avg: 7.19,   price: 11.872,   prev: 11.57 },
+    { symbol: "MP",    name: "MP Materials Corp",                 qty: 7.925180,   avg: 63.09,  price: 54.875,   prev: 51.11 },
+    { symbol: "LCID",  name: "Lucid Group Inc",                   qty: 13.5,       avg: 478.05, price: 6.59,     prev: 7.04 },
+    { symbol: "JOBY",  name: "Joby Aviation Inc",                 qty: 50.352467,  avg: 9.93,   price: 8.775,    prev: 8.64 },
+    { symbol: "FUBO",  name: "FuboTV Inc",                        qty: 20,         avg: 106.20, price: 9.01,     prev: 9.26 },
+    { symbol: "SPCX",  name: "The SPAC and New Issue ETF",        qty: 16,         avg: 135.00, price: 134.975,  prev: 133.11 }
+  ];
+
+  let rhSortKey = "value", rhSortDir = -1, rhSearchQuery = "";
+
+  const usd0 = v => "$" + (v ?? 0).toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+  const usd  = v => "$" + (v ?? 0).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const usdSigned = v => (v >= 0 ? "+$" : "−$") + Math.abs(v ?? 0).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+  function rhCompute(r) {
+    const value  = r.price * r.qty;
+    const cost   = r.avg * r.qty;
+    const dayChg = (r.price - r.prev) * r.qty;
+    const dayPct = r.prev ? ((r.price - r.prev) / r.prev) * 100 : 0;
+    const gain   = value - cost;
+    const gainPct = cost ? (gain / cost) * 100 : 0;
+    return { value, cost, dayChg, dayPct, gain, gainPct };
+  }
+
+  function rhFilteredSorted() {
+    const q = rhSearchQuery.trim().toLowerCase();
+    let list = ROBINHOOD.slice();
+    if (q) list = list.filter(r =>
+      r.symbol.toLowerCase().includes(q) || r.name.toLowerCase().includes(q));
+    const dir = rhSortDir;
+    list.sort((a, b) => {
+      const ca = rhCompute(a), cb = rhCompute(b);
+      let av, bv;
+      switch (rhSortKey) {
+        case "symbol": av = a.symbol; bv = b.symbol; break;
+        case "name":   av = a.name;   bv = b.name;   break;
+        case "qty":    av = a.qty;    bv = b.qty;    break;
+        case "avg":    av = a.avg;    bv = b.avg;    break;
+        case "price":  av = a.price;  bv = b.price;  break;
+        case "dayChg": av = ca.dayChg; bv = cb.dayChg; break;
+        case "dayPct": av = ca.dayPct; bv = cb.dayPct; break;
+        case "value":  av = ca.value; bv = cb.value; break;
+        case "gain":   av = ca.gain;  bv = cb.gain;  break;
+      }
+      if (typeof av === "string") return av.localeCompare(bv) * dir;
+      return ((av || 0) - (bv || 0)) * dir;
+    });
+    return list;
+  }
+
+  function renderRh() {
+    const tb = document.getElementById("rhtbody");
+    tb.innerHTML = "";
+    let totValue = 0, totCost = 0, totDay = 0, totPrev = 0;
+    let top = null;
+
+    ROBINHOOD.forEach(r => {
+      const c = rhCompute(r);
+      totValue += c.value; totCost += c.cost; totDay += c.dayChg;
+      totPrev += r.prev * r.qty;
+      if (!top || Math.abs(c.dayPct) > Math.abs(top.pct)) top = { sym: r.symbol, pct: c.dayPct };
+    });
+
+    rhFilteredSorted().forEach(r => {
+      const c = rhCompute(r);
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td><span class="sym">${r.symbol}</span></td>
+        <td><div class="name">${r.name}</div></td>
+        <td class="num">${r.qty.toLocaleString("en-US", { maximumFractionDigits: 4 })}</td>
+        <td class="num">${usd(r.avg)}</td>
+        <td class="num">${usd(r.price)}</td>
+        <td class="num ${cls(c.dayChg)}">${usdSigned(c.dayChg)}</td>
+        <td class="num ${cls(c.dayPct)}">${pct(c.dayPct)}</td>
+        <td class="num"><b>${usd(c.value)}</b></td>
+        <td class="num ${cls(c.gain)}">${usdSigned(c.gain)}<span class="as-of">${pct(c.gainPct)}</span></td>
+      `;
+      tb.appendChild(tr);
+    });
+
+    // Footer
+    document.getElementById("rhFootValue").textContent = usd(totValue);
+    document.getElementById("rhFootGain").textContent  = usdSigned(totValue - totCost);
+    document.getElementById("rhFootGain").className = "num " + cls(totValue - totCost);
+    const fd = document.getElementById("rhFootDayChg");
+    fd.textContent = usdSigned(totDay); fd.className = "num " + cls(totDay);
+    const totDayPct = totPrev ? (totDay / totPrev) * 100 : 0;
+    const fdp = document.getElementById("rhFootDayPct");
+    fdp.textContent = pct(totDayPct); fdp.className = "num " + cls(totDay);
+
+    // KPIs
+    document.getElementById("rhKpiValue").textContent = usd0(totValue);
+    const kd = document.getElementById("rhKpiDay");
+    kd.textContent = (totDay >= 0 ? "+" : "−") + usd0(Math.abs(totDay));
+    kd.className = "value " + cls(totDay);
+    const kdp = document.getElementById("rhKpiDayPct");
+    kdp.textContent = pct(totDayPct); kdp.className = "delta " + cls(totDay);
+    const gain = totValue - totCost, gainPct = totCost ? (gain / totCost) * 100 : 0;
+    const kg = document.getElementById("rhKpiGain");
+    kg.textContent = (gain >= 0 ? "+" : "−") + usd0(Math.abs(gain));
+    kg.className = "value " + cls(gain);
+    const kgp = document.getElementById("rhKpiGainPct");
+    kgp.textContent = pct(gainPct); kgp.className = "delta " + cls(gain);
+    document.getElementById("rhKpiCash").textContent = usd0(RH_CASH);
+    document.getElementById("rhKpiAccount").textContent = "account value " + usd0(RH_ACCOUNT_VALUE);
+    if (top) {
+      document.getElementById("rhKpiTop").textContent = top.sym;
+      const kt = document.getElementById("rhKpiTopPct");
+      kt.textContent = pct(top.pct); kt.className = "delta " + cls(top.pct);
+    }
+
+    // Sort arrows
+    document.querySelectorAll("#rhtable thead th").forEach(th => {
+      th.classList.remove("sorted");
+      const a = th.querySelector(".arrow");
+      if (a) a.textContent = "↕";
+      if (th.dataset.rhsort === rhSortKey) {
+        th.classList.add("sorted");
+        if (a) a.textContent = rhSortDir === 1 ? "↑" : "↓";
+      }
+    });
+  }
+
+  function exportRhCsv() {
+    const headers = ["Symbol","Name","Qty","Avg Cost","Price","Day Change","Day %","Market Value","Total G/L","G/L %"];
+    const lines = [headers.join(",")];
+    ROBINHOOD.forEach(r => {
+      const c = rhCompute(r);
+      lines.push([
+        r.symbol, '"' + r.name.replace(/"/g,'""') + '"', r.qty,
+        r.avg.toFixed(2), r.price.toFixed(4), c.dayChg.toFixed(2),
+        c.dayPct.toFixed(2), c.value.toFixed(2), c.gain.toFixed(2), c.gainPct.toFixed(2)
+      ].join(","));
+    });
+    const blob = new Blob([lines.join("\n")], { type: "text/csv" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `robinhood_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+  }
+
+  document.getElementById("rhSearchInput").addEventListener("input", e => {
+    rhSearchQuery = e.target.value; renderRh();
+  });
+  document.getElementById("rhExportBtn").addEventListener("click", exportRhCsv);
+
+  // ---- YTD P&L chart (self-logging via localStorage) ----
+  const RH_YTD = 7739.56;               // YTD unrealized P&L from Robinhood app
+  const RH_YTD_KEY = "rhYtdSeries_v1";
+  let rhYtdChart = null;
+
+  function rhYtdSeries() {
+    let series = {};
+    try { series = JSON.parse(localStorage.getItem(RH_YTD_KEY)) || {}; } catch (_) {}
+    const today = new Date().toISOString().slice(0, 10);
+    series[today] = RH_YTD;              // upsert today's value from the current snapshot
+    try { localStorage.setItem(RH_YTD_KEY, JSON.stringify(series)); } catch (_) {}
+    return Object.keys(series).sort().map(d => ({ date: d, value: series[d] }));
+  }
+
+  function renderRhYtd() {
+    const canvas = document.getElementById("rhYtdChart");
+    if (!canvas) return;
+    const data = rhYtdSeries();
+    const labels = data.map(d => d.date);
+    const values = data.map(d => d.value);
+
+    // KPI cards (mirrors the History tab)
+    const latest = values[values.length - 1];
+    const first  = values[0];
+    const high   = Math.max(...values);
+    const highIdx = values.indexOf(high);
+    const change  = latest - first;
+    const changePct = first ? (change / first) * 100 : 0;
+    document.getElementById("rhHistLatest").textContent = usd0(latest);
+    document.getElementById("rhHistLatestDate").textContent = labels[labels.length - 1];
+    document.getElementById("rhHistHigh").textContent = usd0(high);
+    document.getElementById("rhHistHighDate").textContent = labels[highIdx];
+    const chEl = document.getElementById("rhHistChange");
+    chEl.textContent = (change >= 0 ? "+" : "−") + usd0(Math.abs(change));
+    chEl.className = "value " + cls(change);
+    const cpEl = document.getElementById("rhHistChangePct");
+    cpEl.textContent = pct(changePct);
+    cpEl.className = "delta " + cls(change);
+
+    document.getElementById("rhHistSub").textContent =
+      data.length > 1
+        ? `${data.length} recorded days · ${labels[0]} → ${labels[labels.length - 1]}`
+        : `Seeded today at $${RH_YTD.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} — a curve builds as you reopen the dashboard.`;
+
+    if (rhYtdChart) rhYtdChart.destroy();
+    const ctx = canvas.getContext("2d");
+    rhYtdChart = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels,
+        datasets: [{
+          label: "YTD P&L",
+          data: values,
+          borderColor: "#21c07a",
+          backgroundColor: "rgba(33,192,122,0.10)",
+          borderWidth: 2.5,
+          pointRadius: values.length <= 30 ? 5 : 3,
+          pointBackgroundColor: "#21c07a",
+          pointHoverRadius: 7,
+          fill: true,
+          tension: 0.3
+        }]
+      },
+      options: {
+        responsive: true,
+        interaction: { mode: "index", intersect: false },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: "#1d2438", borderColor: "#2a3350", borderWidth: 1,
+            titleColor: "#8a93a8", bodyColor: "#e6e9f2",
+            callbacks: { label: c => "  $" + c.parsed.y.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }
+          }
+        },
+        scales: {
+          x: { grid: { color: "rgba(255,255,255,0.04)" }, ticks: { color: "#8a93a8", maxTicksLimit: 10, maxRotation: 30 } },
+          y: { grid: { color: "rgba(255,255,255,0.04)" }, ticks: { color: "#8a93a8", callback: v => "$" + v.toLocaleString("en-US") } }
+        }
+      }
+    });
+  }
+
+  document.getElementById("rhHistResetBtn").addEventListener("click", () => {
+    try { localStorage.removeItem(RH_YTD_KEY); } catch (_) {}
+    renderRhYtd();
+  });
+
+  document.querySelectorAll("#rhtable thead th[data-rhsort]").forEach(th => {
+    th.addEventListener("click", () => {
+      const k = th.dataset.rhsort;
+      if (rhSortKey === k) rhSortDir = -rhSortDir;
+      else { rhSortKey = k; rhSortDir = (k === "symbol" || k === "name") ? 1 : -1; }
+      renderRh();
+    });
+  });
+
   // ---- Wire up ----
   document.getElementById("refreshBtn").addEventListener("click", fetchLive);
   document.getElementById("mfRefreshBtn").addEventListener("click", fetchMfNavs);
@@ -1267,14 +1684,16 @@
     t.addEventListener("click", () => {
       switchTab(t.dataset.tab);
       if (t.dataset.tab === "history" && !histLoaded) loadHistory();
+      if (t.dataset.tab === "rhhistory") renderRhYtd();
     }));
 
   // Restore last-active tab
   try {
     const saved = localStorage.getItem("activeTab_v1");
-    if (saved && ["stocks","mfs","combined","history"].includes(saved)) {
+    if (saved && ["stocks","mfs","robinhood","combined","history","rhhistory"].includes(saved)) {
       switchTab(saved);
       if (saved === "history") loadHistory();
+      if (saved === "rhhistory") renderRhYtd();
     }
   } catch (_) {}
 
@@ -1282,6 +1701,8 @@
   hydrateFromCache();
   render();
   renderMfs();
+  renderRh();
+  rhYtdSeries();   // log today's YTD point on load; chart renders when its tab opens
 </script>
 </body>
 </html>
