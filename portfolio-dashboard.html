@@ -478,6 +478,7 @@
 
   <section class="controls">
     <input type="text" id="rhSearchInput" placeholder="🔍 Search by symbol or name…" />
+    <button class="btn secondary" id="rhRefreshBtn" type="button">⟳ Refresh</button>
     <button class="btn secondary" id="rhExportBtn" type="button">Export CSV</button>
     <div style="flex:1 1 100%; color:var(--muted); font-size:11.5px;" id="rhSub">
       Static snapshot from Robinhood (account ••8275) &middot; prices as of 10-Aug-2026, 10:54 AM ET. All values in USD.
@@ -1633,6 +1634,21 @@
   });
   document.getElementById("rhExportBtn").addEventListener("click", exportRhCsv);
 
+  // Refresh: re-render the Robinhood snapshot table + KPIs and stamp the time.
+  function refreshRh() {
+    const btn = document.getElementById("rhRefreshBtn");
+    btn.disabled = true;
+    const orig = btn.textContent;
+    btn.textContent = "Refreshing…";
+    renderRh();
+    const now = new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
+    document.getElementById("rhSub").innerHTML =
+      `Static snapshot from Robinhood (account &bull;&bull;8275) &middot; snapshot ${RH_SNAPSHOT_LABEL} &middot; ` +
+      `view refreshed at ${now}. Prices are from the snapshot — ask me to pull fresh quotes for live values.`;
+    setTimeout(() => { btn.disabled = false; btn.textContent = orig; }, 400);
+  }
+  document.getElementById("rhRefreshBtn").addEventListener("click", refreshRh);
+
   // ---- YTD P&L chart (self-logging via localStorage) ----
   // Two series: main Robinhood account + Agentic account.
   const RH_YTD = 7739.56;               // YTD P&L from Robinhood app (main account)
@@ -1708,8 +1724,9 @@
             spanGaps: true
           },
           {
-            label: "Agentic YTD",
+            label: "Agentic AI YTD",
             data: agVals,
+            yAxisID: "yAgentic",
             borderColor: "#4f8cff",
             backgroundColor: "rgba(79,140,255,0.10)",
             borderWidth: 2.5,
@@ -1735,7 +1752,18 @@
         },
         scales: {
           x: { grid: { color: "rgba(255,255,255,0.04)" }, ticks: { color: "#8a93a8", maxTicksLimit: 10, maxRotation: 30 } },
-          y: { grid: { color: "rgba(255,255,255,0.04)" }, ticks: { color: "#8a93a8", callback: v => "$" + v.toLocaleString("en-US") } }
+          y: {
+            position: "left",
+            title: { display: true, text: "Robinhood ($)", color: "#21c07a" },
+            grid: { color: "rgba(255,255,255,0.04)" },
+            ticks: { color: "#21c07a", callback: v => "$" + v.toLocaleString("en-US") }
+          },
+          yAgentic: {
+            position: "right",
+            title: { display: true, text: "Agentic AI ($)", color: "#4f8cff" },
+            grid: { drawOnChartArea: false },
+            ticks: { color: "#4f8cff", callback: v => "$" + v.toLocaleString("en-US") }
+          }
         }
       }
     });
