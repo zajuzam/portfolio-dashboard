@@ -555,7 +555,7 @@
     <input type="text" id="agSearchInput" placeholder="🔍 Search by symbol or name…" />
     <button class="btn secondary" id="agExportBtn" type="button">Export CSV</button>
     <div style="flex:1 1 100%; color:var(--muted); font-size:11.5px;" id="agSub">
-      Robinhood <b>Agentic</b> account (••5213) &middot; prices as of 10-Aug-2026, 11:27 AM ET. All values in USD.
+      Robinhood <b>Agentic</b> account (••5213) &middot; prices as of 21-Aug-2026 close. All values in USD.
     </div>
   </section>
 
@@ -667,18 +667,18 @@
   <div class="tab-panel" data-tab="rhhistory">
 
   <div style="margin: 8px 4px 18px; color: var(--muted); font-size: 13px;">
-    YTD profit &amp; loss (USD) for both Robinhood accounts, recorded locally each day you open the dashboard.
-    Seeded 10-Aug-2026 — Robinhood $7,739.56, Agentic −$4.19. One point is added per account per day; the curves grow over time.
+    Combined holdings value (USD) and total profit/loss for both Robinhood accounts, one point per trading day.
+    Reconstructed from each holding's daily close price × your current shares (cash excluded). P&amp;L is unrealised gain vs. your cost basis of $48,878.50.
   </div>
 
   <section class="hist-kpis">
     <div class="kpi">
-      <div class="label">Latest YTD P&L</div>
+      <div class="label">Latest Holdings Value</div>
       <div class="value" id="rhHistLatest">—</div>
       <div class="delta" id="rhHistLatestDate">&nbsp;</div>
     </div>
     <div class="kpi">
-      <div class="label">All-Time High</div>
+      <div class="label">Total P&L</div>
       <div class="value" id="rhHistHigh">—</div>
       <div class="delta" id="rhHistHighDate">&nbsp;</div>
     </div>
@@ -692,10 +692,9 @@
   <div class="chart-wrap">
     <div class="chart-header">
       <div>
-        <h2>Robinhood YTD P&amp;L Over Time</h2>
+        <h2>Robinhood Holdings Value &amp; P&amp;L Over Time</h2>
         <div class="sub" id="rhHistSub">Loading…</div>
       </div>
-      <button class="btn secondary" id="rhHistResetBtn" type="button" title="Clear the recorded YTD history">⟲ Reset</button>
     </div>
     <canvas id="rhYtdChart"></canvas>
   </div>
@@ -1649,48 +1648,81 @@
   }
   document.getElementById("rhRefreshBtn").addEventListener("click", refreshRh);
 
-  // ---- YTD P&L chart (self-logging via localStorage) ----
-  // Two series: main Robinhood account + Agentic account.
-  const RH_YTD = 7739.56;               // YTD P&L from Robinhood app (main account)
-  const AG_YTD = -4.19;                 // Agentic YTD ≈ current unrealized (account funded this year)
-  const RH_YTD_KEY = "rhYtdSeries_v1";
-  const AG_YTD_KEY = "agYtdSeries_v1";
+  // ---- Robinhood Holdings Value & P&L history ----
+  // Reconstructed daily series (both accounts combined): [date, holdingsValue, pnlVsCost].
+  // Value = sum(current shares × that day's close); cash excluded. P&L = value − cost basis.
+  // Backfilled from Robinhood daily closes (Jan 2 → 21 Aug 2026). Regenerate to extend.
+  const RH_COST_BASIS = 48878.5;
+  const RH_HISTORY = [
+    ["2026-01-02",57167.52,8289.03],["2026-01-05",58104.52,9226.02],["2026-01-06",58265.96,9387.46],["2026-01-07",58575.13,9696.63],
+    ["2026-01-08",58456.84,9578.34],["2026-01-09",58939.22,10060.73],["2026-01-12",59459.19,10580.7],["2026-01-13",59291.03,10412.53],
+    ["2026-01-14",59264.41,10385.91],["2026-01-15",58655.29,9776.79],["2026-01-16",58275.59,9397.1],["2026-01-20",57144.58,8266.08],
+    ["2026-01-21",57751.11,8872.61],["2026-01-22",58480.12,9601.62],["2026-01-23",57920.21,9041.71],["2026-01-26",58521.07,9642.57],
+    ["2026-01-27",59164.53,10286.03],["2026-01-28",58525.79,9647.29],["2026-01-29",57717.47,8838.97],["2026-01-30",56562.41,7683.91],
+    ["2026-02-02",56951.94,8073.44],["2026-02-03",56320.93,7442.43],["2026-02-04",55412.14,6533.64],["2026-02-05",54032.5,5154.0],
+    ["2026-02-06",55372.36,6493.86],["2026-02-09",56238.14,7359.64],["2026-02-10",56594.32,7715.83],["2026-02-11",55897.44,7018.94],
+    ["2026-02-12",54501.59,5623.1],["2026-02-13",55156.12,6277.62],["2026-02-17",55829.36,6950.86],["2026-02-18",56382.45,7503.95],
+    ["2026-02-19",55776.17,6897.67],["2026-02-20",55506.86,6628.36],["2026-02-23",54460.52,5582.02],["2026-02-24",55268.4,6389.9],
+    ["2026-02-25",55958.67,7080.18],["2026-02-26",55652.4,6773.9],["2026-02-27",54973.24,6094.74],["2026-03-02",55372.68,6494.19],
+    ["2026-03-03",54698.66,5820.16],["2026-03-04",55690.39,6811.89],["2026-03-05",55817.53,6939.04],["2026-03-06",55434.81,6556.32],
+    ["2026-03-09",55854.94,6976.44],["2026-03-10",55690.33,6811.83],["2026-03-11",56318.94,7440.45],["2026-03-12",55679.6,6801.1],
+    ["2026-03-13",55318.76,6440.26],["2026-03-16",55716.66,6838.17],["2026-03-17",56037.4,7158.91],["2026-03-18",55119.83,6241.33],
+    ["2026-03-19",55630.63,6752.14],["2026-03-20",54517.84,5639.35],["2026-03-23",55106.08,6227.58],["2026-03-24",54449.46,5570.96],
+    ["2026-03-25",54843.93,5965.43],["2026-03-26",53886.26,5007.76],["2026-03-27",52257.77,3379.27],["2026-03-30",52205.1,3326.61],
+    ["2026-03-31",54216.09,5337.6],["2026-04-01",54537.53,5659.03],["2026-04-02",54481.84,5603.34],["2026-04-06",54060.41,5181.91],
+    ["2026-04-07",53829.2,4950.7],["2026-04-08",54800.05,5921.56],["2026-04-09",55119.42,6240.92],["2026-04-10",54340.38,5461.88],
+    ["2026-04-13",55481.96,6603.46],["2026-04-14",56393.2,7514.71],["2026-04-15",57827.25,8948.75],["2026-04-16",57761.31,8882.81],
+    ["2026-04-17",58366.53,9488.04],["2026-04-20",58545.24,9666.74],["2026-04-21",57905.48,9026.98],["2026-04-22",58557.12,9678.63],
+    ["2026-04-23",57908.03,9029.53],["2026-04-24",58480.71,9602.21],["2026-04-27",58743.5,9865.0],["2026-04-28",58452.11,9573.61],
+    ["2026-04-29",58162.55,9284.06],["2026-04-30",59001.55,10123.05],["2026-05-01",59489.01,10610.51],["2026-05-04",59938.48,11059.98],
+    ["2026-05-05",60433.34,11554.85],["2026-05-06",60839.01,11960.51],["2026-05-07",61132.45,12253.96],["2026-05-08",61338.25,12459.75],
+    ["2026-05-11",60794.12,11915.62],["2026-05-12",61027.57,12149.07],["2026-05-13",60763.93,11885.43],["2026-05-14",61562.16,12683.66],
+    ["2026-05-15",60158.1,11279.61],["2026-05-18",60138.96,11260.46],["2026-05-19",59725.72,10847.22],["2026-05-20",60404.51,11526.01],
+    ["2026-05-21",60338.56,11460.06],["2026-05-22",60142.27,11263.77],["2026-05-26",60605.44,11726.95],["2026-05-27",60554.4,11675.91],
+    ["2026-05-28",61253.9,12375.4],["2026-05-29",61671.32,12792.82],["2026-06-01",61900.74,13022.24],["2026-06-02",61151.41,12272.92],
+    ["2026-06-03",60055.61,11177.11],["2026-06-04",60493.7,11615.2],["2026-06-05",58623.64,9745.14],["2026-06-08",58876.94,9998.45],
+    ["2026-06-09",58523.68,9645.19],["2026-06-10",57602.81,8724.31],["2026-06-11",58754.82,9876.32],["2026-06-12",58826.59,9948.09],
+    ["2026-06-15",59839.75,10961.25],["2026-06-16",59774.4,10895.91],["2026-06-17",59603.78,10725.28],["2026-06-18",60617.62,11739.13],
+    ["2026-06-22",59957.3,11078.8],["2026-06-23",59901.78,11023.28],["2026-06-24",59676.42,10797.92],["2026-06-25",60044.23,11165.73],
+    ["2026-06-26",60185.52,11307.02],["2026-06-29",61469.29,12590.8],["2026-06-30",62331.93,13453.43],["2026-07-01",62093.8,13215.3],
+    ["2026-07-02",62400.97,13522.47],["2026-07-06",63472.95,14594.45],["2026-07-07",62434.84,13556.34],["2026-07-08",62159.74,13281.24],
+    ["2026-07-09",62392.5,13514.0],["2026-07-10",61819.62,12941.12],["2026-07-13",61009.31,12130.81],["2026-07-14",61196.91,12318.41],
+    ["2026-07-15",61516.87,12638.37],["2026-07-16",60918.18,12039.68],["2026-07-17",60883.12,12004.63],["2026-07-20",61097.86,12219.36],
+    ["2026-07-21",61012.33,12133.84],["2026-07-22",60695.19,11816.69],["2026-07-23",59849.14,10970.64],["2026-07-24",59390.64,10512.14],
+    ["2026-07-27",59794.02,10915.52],["2026-07-28",59934.88,11056.38],["2026-07-29",58563.33,9684.83],["2026-07-30",59822.48,10943.98],
+    ["2026-07-31",59514.17,10635.67],["2026-08-03",60941.19,12062.69],["2026-08-04",61891.15,13012.66],["2026-08-05",60942.57,12064.08],
+    ["2026-08-06",61390.68,12512.18],["2026-08-07",62470.43,13591.93],["2026-08-10",62716.0,13837.5],["2026-08-11",62293.47,13414.98],
+    ["2026-08-12",63257.17,14378.67],["2026-08-13",61929.67,13051.17],["2026-08-14",61997.96,13119.47],["2026-08-17",61109.99,12231.49],
+    ["2026-08-18",60421.51,11543.01],["2026-08-19",60801.25,11922.75],["2026-08-20",60071.22,11192.73],["2026-08-21",60292.66,11414.16],
+  ];
   let rhYtdChart = null;
-
-  // Upsert today's value into a localStorage-backed {date: value} map.
-  function ytdUpsert(key, val) {
-    let series = {};
-    try { series = JSON.parse(localStorage.getItem(key)) || {}; } catch (_) {}
-    const today = new Date().toISOString().slice(0, 10);
-    series[today] = val;
-    try { localStorage.setItem(key, JSON.stringify(series)); } catch (_) {}
-    return series;
-  }
-  function rhYtdSeries() { return ytdUpsert(RH_YTD_KEY, RH_YTD); }
-  function agYtdSeries() { return ytdUpsert(AG_YTD_KEY, AG_YTD); }
 
   function renderRhYtd() {
     const canvas = document.getElementById("rhYtdChart");
-    if (!canvas) return;
-    const rh = rhYtdSeries();
-    const ag = agYtdSeries();
-    const labels = Array.from(new Set([...Object.keys(rh), ...Object.keys(ag)])).sort();
-    const rhVals = labels.map(d => (d in rh ? rh[d] : null));
-    const agVals = labels.map(d => (d in ag ? ag[d] : null));
+    if (!canvas || !RH_HISTORY.length) return;
 
-    // KPI cards track the main Robinhood series
-    const rhDates = labels.filter(d => d in rh);
-    const values  = rhDates.map(d => rh[d]);
-    const latest  = values[values.length - 1];
-    const first   = values[0];
-    const high    = Math.max(...values);
-    const highIdx = values.indexOf(high);
-    const change  = latest - first;
+    const labels  = RH_HISTORY.map(r => r[0]);
+    const values  = RH_HISTORY.map(r => r[1]);
+    const pnls    = RH_HISTORY.map(r => r[2]);
+
+    const latest    = values[values.length - 1];
+    const first     = values[0];
+    const latestPnl = pnls[pnls.length - 1];
+    const change    = latest - first;
     const changePct = first ? (change / first) * 100 : 0;
+    const pnlPct    = RH_COST_BASIS ? (latestPnl / RH_COST_BASIS) * 100 : 0;
+
+    // KPI 1: latest holdings value
     document.getElementById("rhHistLatest").textContent = usd0(latest);
-    document.getElementById("rhHistLatestDate").textContent = rhDates[rhDates.length - 1] + " · Robinhood";
-    document.getElementById("rhHistHigh").textContent = usd0(high);
-    document.getElementById("rhHistHighDate").textContent = rhDates[highIdx];
+    document.getElementById("rhHistLatestDate").textContent = labels[labels.length - 1];
+    // KPI 2: total P&L (vs cost)
+    const hEl = document.getElementById("rhHistHigh");
+    hEl.textContent = (latestPnl >= 0 ? "+" : "−") + usd0(Math.abs(latestPnl));
+    hEl.className = "value " + cls(latestPnl);
+    const hdEl = document.getElementById("rhHistHighDate");
+    hdEl.textContent = pct(pnlPct) + " vs cost";
+    hdEl.className = "delta " + cls(latestPnl);
+    // KPI 3: change first → latest (value)
     const chEl = document.getElementById("rhHistChange");
     chEl.textContent = (change >= 0 ? "+" : "−") + usd0(Math.abs(change));
     chEl.className = "value " + cls(change);
@@ -1699,9 +1731,7 @@
     cpEl.className = "delta " + cls(change);
 
     document.getElementById("rhHistSub").textContent =
-      labels.length > 1
-        ? `${labels.length} recorded days · ${labels[0]} → ${labels[labels.length - 1]}`
-        : `Seeded today — Robinhood $${RH_YTD.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}, Agentic $${AG_YTD.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}. Curves build as you reopen the dashboard.`;
+      `${labels.length} trading days · ${labels[0]} → ${labels[labels.length - 1]}`;
 
     if (rhYtdChart) rhYtdChart.destroy();
     const ctx = canvas.getContext("2d");
@@ -1711,31 +1741,29 @@
         labels,
         datasets: [
           {
-            label: "Robinhood YTD",
-            data: rhVals,
+            label: "Holdings Value",
+            data: values,
             borderColor: "#21c07a",
-            backgroundColor: "rgba(33,192,122,0.10)",
+            backgroundColor: "rgba(33,192,122,0.08)",
             borderWidth: 2.5,
-            pointRadius: labels.length <= 30 ? 5 : 3,
+            pointRadius: 0,
+            pointHoverRadius: 5,
             pointBackgroundColor: "#21c07a",
-            pointHoverRadius: 7,
             fill: true,
-            tension: 0.3,
-            spanGaps: true
+            tension: 0.25
           },
           {
-            label: "Agentic AI YTD",
-            data: agVals,
-            yAxisID: "yAgentic",
+            label: "Total P&L (vs cost)",
+            data: pnls,
+            yAxisID: "yPnl",
             borderColor: "#4f8cff",
-            backgroundColor: "rgba(79,140,255,0.10)",
+            backgroundColor: "rgba(79,140,255,0.08)",
             borderWidth: 2.5,
-            pointRadius: labels.length <= 30 ? 5 : 3,
+            pointRadius: 0,
+            pointHoverRadius: 5,
             pointBackgroundColor: "#4f8cff",
-            pointHoverRadius: 7,
-            fill: true,
-            tension: 0.3,
-            spanGaps: true
+            fill: false,
+            tension: 0.25
           }
         ]
       },
@@ -1754,25 +1782,20 @@
           x: { grid: { color: "rgba(255,255,255,0.04)" }, ticks: { color: "#8a93a8", maxTicksLimit: 10, maxRotation: 30 } },
           y: {
             position: "left",
-            title: { display: true, text: "Robinhood ($)", color: "#21c07a" },
+            title: { display: true, text: "Holdings Value ($)", color: "#21c07a" },
             grid: { color: "rgba(255,255,255,0.04)" },
-            ticks: { color: "#21c07a", callback: v => "$" + v.toLocaleString("en-US") }
+            ticks: { color: "#21c07a", callback: v => "$" + (v / 1000).toFixed(0) + "k" }
           },
-          yAgentic: {
+          yPnl: {
             position: "right",
-            title: { display: true, text: "Agentic AI ($)", color: "#4f8cff" },
+            title: { display: true, text: "Total P&L ($)", color: "#4f8cff" },
             grid: { drawOnChartArea: false },
-            ticks: { color: "#4f8cff", callback: v => "$" + v.toLocaleString("en-US") }
+            ticks: { color: "#4f8cff", callback: v => "$" + (v / 1000).toFixed(0) + "k" }
           }
         }
       }
     });
   }
-
-  document.getElementById("rhHistResetBtn").addEventListener("click", () => {
-    try { localStorage.removeItem(RH_YTD_KEY); localStorage.removeItem(AG_YTD_KEY); } catch (_) {}
-    renderRhYtd();
-  });
 
   document.querySelectorAll("#rhtable thead th[data-rhsort]").forEach(th => {
     th.addEventListener("click", () => {
@@ -1786,17 +1809,17 @@
   // ============================================================
   // ---- Agentic (Robinhood) portfolio ----
   // Snapshot from the Robinhood "Agentic" account (••5213).
-  // Snapshot: 10-Aug-2026, 11:27 AM ET.
+  // Snapshot: 21-Aug-2026 close (refreshed via Robinhood connector).
   // ============================================================
   const AG_CASH = 0;
-  const AG_ACCOUNT_VALUE = 995.81;
+  const AG_ACCOUNT_VALUE = 953.91;
   const AGENTIC = [
-    { symbol: "QQQ",   name: "Invesco QQQ Trust",       qty: 0.414531, avg: 723.71, price: 721.275, prev: 723.03 },
-    { symbol: "NVDA",  name: "NVIDIA Corp",             qty: 0.680673, avg: 220.37, price: 219.11,  prev: 223.96 },
-    { symbol: "MSFT",  name: "Microsoft Corp",          qty: 0.293206, avg: 511.59, price: 509.18,  prev: 499.99 },
-    { symbol: "AMZN",  name: "Amazon.com Inc",          qty: 0.539200, avg: 278.19, price: 279.37,  prev: 274.48 },
-    { symbol: "GOOGL", name: "Alphabet Inc (Class A)",  qty: 0.420959, avg: 356.33, price: 354.04,  prev: 354.30 },
-    { symbol: "AVGO",  name: "Broadcom Inc",            qty: 0.232417, avg: 430.26, price: 424.735, prev: 427.76 }
+    { symbol: "QQQ",   name: "Invesco QQQ Trust",       qty: 0.414531, avg: 723.71, price: 713.40, prev: 710.93 },
+    { symbol: "NVDA",  name: "NVIDIA Corp",             qty: 0.680673, avg: 220.37, price: 214.76, prev: 216.85 },
+    { symbol: "MSFT",  name: "Microsoft Corp",          qty: 0.293206, avg: 511.59, price: 483.34, prev: 481.15 },
+    { symbol: "AMZN",  name: "Amazon.com Inc",          qty: 0.539200, avg: 278.19, price: 258.65, prev: 260.11 },
+    { symbol: "GOOGL", name: "Alphabet Inc (Class A)",  qty: 0.420959, avg: 356.33, price: 344.90, prev: 340.67 },
+    { symbol: "AVGO",  name: "Broadcom Inc",            qty: 0.232417, avg: 430.26, price: 368.45, prev: 364.03 }
   ];
 
   let agSortKey = "value", agSortDir = -1, agSearchQuery = "";
@@ -1977,8 +2000,6 @@
   renderMfs();
   renderRh();
   renderAg();
-  rhYtdSeries();   // log today's YTD points on load; chart renders when its tab opens
-  agYtdSeries();
 </script>
 </body>
 </html>
